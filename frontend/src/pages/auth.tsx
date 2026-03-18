@@ -43,11 +43,11 @@ export function AuthPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 gradient-mesh relative">
       <div className="absolute inset-0 bg-background/80" />
-      <Card className="w-full max-w-md relative animate-scale-in shadow-2xl border-border/50">
+      <Card className="w-full max-w-md relative animate-scale-in shadow-2xl shadow-foreground/5 dark:shadow-primary/10 border-border/50">
         <CardHeader className="text-center pb-2">
           <div className="mx-auto mb-3 relative">
-            <Bot className="h-12 w-12 text-primary" />
-            <div className="absolute inset-0 blur-xl bg-primary/20" />
+            <Bot className="h-12 w-12 text-foreground dark:text-primary" />
+            <div className="absolute inset-0 blur-xl bg-foreground/5 dark:bg-primary/20" />
           </div>
           <CardTitle className="text-xl">{isLogin ? 'Вход в систему' : 'Регистрация'}</CardTitle>
           <CardDescription>
@@ -94,7 +94,7 @@ export function AuthPage() {
                 {error}
               </p>
             )}
-            <Button type="submit" className="w-full shadow-lg shadow-primary/20">
+            <Button type="submit" className="w-full shadow-lg shadow-foreground/10 dark:shadow-primary/20">
               {isLogin ? 'Войти' : 'Зарегистрироваться'}
             </Button>
           </form>

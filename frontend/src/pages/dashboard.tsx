@@ -30,7 +30,7 @@ export function DashboardPage() {
             <Card key={col.id}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{col.title}</CardTitle>
-                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: col.color }} />
+                <span className="text-lg">{col.emoji}</span>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{count}</div>

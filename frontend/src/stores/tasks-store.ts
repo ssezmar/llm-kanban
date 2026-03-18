@@ -5,7 +5,7 @@ import { mockTasks } from '@/lib/mock-data'
 
 interface TasksState {
   tasks: Task[]
-  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'progress' | 'logs' | 'review'>) => void
+  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'progress' | 'logs' | 'review' | 'createdBy'> & { createdBy?: string | null }) => void
   updateTask: (id: string, updates: Partial<Task>) => void
   moveTask: (id: string, status: string) => void
   deleteTask: (id: string) => void
@@ -28,6 +28,7 @@ export const useTasksStore = create<TasksState>()(
         const task: Task = {
           ...taskData,
           id: `task-${Date.now()}`,
+          createdBy: taskData.createdBy ?? null,
           createdAt: Date.now(),
           updatedAt: Date.now(),
           progress: 0,
@@ -77,7 +78,7 @@ export const useTasksStore = create<TasksState>()(
 
       startExecution: (taskId) => {
         const { moveTask, addLog, updateTask } = get()
-        moveTask(taskId, 'in_progress')
+        moveTask(taskId, 'executing')
         addLog(taskId, { message: 'Агент начал выполнение задачи...', type: 'info' })
 
         const messages = [

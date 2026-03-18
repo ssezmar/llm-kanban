@@ -30,8 +30,8 @@ export function Layout() {
           <div className="flex items-center gap-6">
             <Link to="/dashboard" className="flex items-center gap-2.5 font-bold text-lg group">
               <div className="relative">
-                <Bot className="h-6 w-6 text-primary transition-transform group-hover:scale-110" />
-                <div className="absolute inset-0 blur-lg bg-primary/20 group-hover:bg-primary/30 transition-colors" />
+                <Bot className="h-6 w-6 text-foreground dark:text-primary transition-transform group-hover:scale-110" />
+                <div className="absolute inset-0 blur-lg bg-foreground/5 dark:bg-primary/20 group-hover:bg-foreground/10 dark:group-hover:bg-primary/30 transition-colors" />
               </div>
               <span className="hidden sm:inline tracking-tight">LLM Kanban</span>
             </Link>
@@ -58,12 +58,15 @@ export function Layout() {
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <div className="hidden sm:flex items-center gap-2 px-2">
+            <button
+              className="hidden sm:flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-muted transition-colors"
+              onClick={() => navigate('/profile')}
+            >
               <div className="h-7 w-7 rounded-full bg-primary/15 text-primary text-[10px] font-bold flex items-center justify-center">
-                {user?.name?.slice(0, 2).toUpperCase()}
+                {user?.avatar || user?.name?.slice(0, 2).toUpperCase()}
               </div>
               <span className="text-sm text-muted-foreground">{user?.name}</span>
-            </div>
+            </button>
             <Button variant="ghost" size="icon" onClick={handleLogout} title="Выйти">
               <LogOut className="h-4 w-4" />
             </Button>

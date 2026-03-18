@@ -5,7 +5,7 @@ import type { Task } from '@/lib/types'
 import { useAgentsStore } from '@/stores/agents-store'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Clock, CalendarClock, CheckSquare, Layers } from 'lucide-react'
+import { Clock, CalendarClock, CheckSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const priorityColors: Record<string, string> = {
@@ -15,11 +15,11 @@ const priorityColors: Record<string, string> = {
   critical: 'bg-red-500/15 text-red-400',
 }
 
-const priorityLabels: Record<string, string> = {
-  low: 'Низкий',
-  medium: 'Средний',
-  high: 'Высокий',
-  critical: 'Критический',
+const priorityEmoji: Record<string, string> = {
+  low: '🟢',
+  medium: '🔵',
+  high: '🟠',
+  critical: '🔴',
 }
 
 interface TaskCardProps {
@@ -29,7 +29,7 @@ interface TaskCardProps {
   epicColor?: string
 }
 
-export function TaskCard({ task, isDragOverlay, epicName, epicColor }: TaskCardProps) {
+export function TaskCard({ task, isDragOverlay, epicName }: TaskCardProps) {
   const navigate = useNavigate()
   const { agents } = useAgentsStore()
   const agent = agents.find((a) => a.id === task.assignedAgent)
@@ -55,48 +55,34 @@ export function TaskCard({ task, isDragOverlay, epicName, epicColor }: TaskCardP
       className={cn(
         'group relative rounded-xl border bg-card overflow-hidden cursor-grab active:cursor-grabbing',
         'transition-all duration-200',
-        'hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-0.5',
+        'hover:shadow-lg hover:shadow-foreground/5 dark:hover:shadow-primary/5 hover:border-foreground/10 dark:hover:border-primary/30 hover:-translate-y-0.5',
         isDragging && 'opacity-40 shadow-xl scale-[0.98]',
-        isDragOverlay && 'shadow-2xl shadow-primary/20 rotate-[2deg] scale-105 border-primary/40'
+        isDragOverlay && 'shadow-2xl shadow-foreground/10 dark:shadow-primary/20 rotate-[2deg] scale-105 border-foreground/15 dark:border-primary/40'
       )}
-      onClick={() => {
-        if (!isDragging) navigate(`/tasks/${task.id}`)
-      }}
+      onClick={() => { if (!isDragging) navigate(`/tasks/${task.id}`) }}
       {...attributes}
       {...listeners}
     >
-      {/* Color accent left border with glow */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-1"
-        style={{ backgroundColor: task.color || '#3b82f6' }}
-      />
+      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: task.color || '#3b82f6' }} />
 
       <div className="p-3 pl-4 space-y-2.5">
-        {/* Epic badge */}
         {epicName && (
           <div className="flex items-center gap-1.5">
-            <Layers className="h-3 w-3" style={{ color: epicColor }} />
-            <span className="text-[10px] font-medium" style={{ color: epicColor }}>
-              {epicName}
-            </span>
+            <span className="text-[10px]">{epicName}</span>
           </div>
         )}
 
         <p className="text-sm font-medium leading-snug line-clamp-2">{task.title}</p>
 
         <div className="flex flex-wrap gap-1">
-          <Badge className={cn('text-[10px] px-1.5 py-0 border-0', priorityColors[task.priority])}>
-            {priorityLabels[task.priority]}
+          <Badge className={cn('text-[10px] px-1.5 py-0 border-0 gap-0.5', priorityColors[task.priority])}>
+            <span>{priorityEmoji[task.priority]}</span>
           </Badge>
           {task.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0 border-border/50">
-              {tag}
-            </Badge>
+            <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0 border-border/50">{tag}</Badge>
           ))}
           {task.tags.length > 2 && (
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-border/50">
-              +{task.tags.length - 2}
-            </Badge>
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-border/50">+{task.tags.length - 2}</Badge>
           )}
         </div>
 
@@ -110,15 +96,12 @@ export function TaskCard({ task, isDragOverlay, epicName, epicColor }: TaskCardP
         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
           <div className="flex items-center gap-2.5">
             <div className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              {task.estimatedTime}м
+              <Clock className="h-3 w-3" />{task.estimatedTime}м
             </div>
             {totalSubtasks > 0 && (
               <div className="flex items-center gap-1">
                 <CheckSquare className="h-3 w-3" />
-                <span className={doneSubtasks === totalSubtasks ? 'text-green-400' : ''}>
-                  {doneSubtasks}/{totalSubtasks}
-                </span>
+                <span className={doneSubtasks === totalSubtasks ? 'text-green-400' : ''}>{doneSubtasks}/{totalSubtasks}</span>
               </div>
             )}
             {task.deadline && (
@@ -129,10 +112,7 @@ export function TaskCard({ task, isDragOverlay, epicName, epicColor }: TaskCardP
             )}
           </div>
           {agent && (
-            <div
-              className="h-5 w-5 rounded-full text-[8px] font-bold flex items-center justify-center ring-1 ring-border"
-              style={{ backgroundColor: `${task.color}20`, color: task.color }}
-            >
+            <div className="h-5 w-5 rounded-full text-[8px] font-bold flex items-center justify-center ring-1 ring-border bg-muted">
               {agent.avatar}
             </div>
           )}
