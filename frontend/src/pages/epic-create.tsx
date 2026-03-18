@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEpicsStore } from '@/stores/epics-store'
 import { Stepper } from '@/components/ui/stepper'
-import { EmojiPicker } from '@/components/ui/emoji-picker'
+import { IconPicker } from '@/components/ui/icon-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { cn } from '@/lib/utils'
 import type { EpicStatus } from '@/lib/types'
 
@@ -17,7 +18,7 @@ const EPIC_COLORS = [
 ]
 
 const steps = [
-  { title: 'Основное', description: 'Название и эмодзи' },
+  { title: 'Основное', description: 'Название и иконка' },
   { title: 'Описание', description: 'Детали эпика' },
   { title: 'Сроки', description: 'Даты и статус' },
 ]
@@ -28,7 +29,7 @@ export function EpicCreatePage() {
 
   const [step, setStep] = useState(0)
   const [name, setName] = useState('')
-  const [emoji, setEmoji] = useState('🚀')
+  const [icon, setIcon] = useState('rocket')
   const [description, setDescription] = useState('')
   const [color, setColor] = useState('#3b82f6')
   const [status, setStatus] = useState<EpicStatus>('planning')
@@ -43,7 +44,7 @@ export function EpicCreatePage() {
   const handleSubmit = () => {
     addEpic({
       name,
-      emoji,
+      icon,
       description,
       color,
       status,
@@ -73,8 +74,8 @@ export function EpicCreatePage() {
             <div className="space-y-6 animate-fade-in-up">
               <div className="flex items-start gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Эмодзи</label>
-                  <EmojiPicker value={emoji} onChange={setEmoji} />
+                  <label className="text-sm font-medium">Иконка</label>
+                  <IconPicker value={icon} onChange={setIcon} />
                 </div>
                 <div className="flex-1 space-y-2">
                   <label className="text-sm font-medium">Название эпика</label>
@@ -129,10 +130,10 @@ export function EpicCreatePage() {
                 <label className="text-sm font-medium">Статус</label>
                 <div className="grid grid-cols-2 gap-2">
                   {([
-                    { v: 'planning', l: 'Планирование', e: '📝' },
-                    { v: 'active', l: 'Активный', e: '🔨' },
-                    { v: 'completed', l: 'Завершён', e: '✅' },
-                    { v: 'archived', l: 'В архиве', e: '📦' },
+                    { v: 'planning', l: 'Планирование', icon: 'clipboard-list' },
+                    { v: 'active', l: 'Активный', icon: 'zap' },
+                    { v: 'completed', l: 'Завершён', icon: 'check-circle' },
+                    { v: 'archived', l: 'В архиве', icon: 'archive' },
                   ] as const).map((s) => (
                     <button
                       key={s.v}
@@ -145,7 +146,7 @@ export function EpicCreatePage() {
                           : 'border-border hover:bg-muted/50'
                       )}
                     >
-                      <span>{s.e}</span>
+                      <DynamicIcon name={s.icon} className="h-4 w-4 text-muted-foreground" />
                       {s.l}
                     </button>
                   ))}

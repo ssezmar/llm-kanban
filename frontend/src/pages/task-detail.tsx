@@ -18,6 +18,7 @@ import {
   CalendarClock, Plus, Trash2, CheckSquare, Square, Send,
   Save, X, Pencil, User, Bot, Tag, Flame,
 } from 'lucide-react'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { cn } from '@/lib/utils'
 import type { TaskPriority } from '@/lib/types'
 
@@ -40,11 +41,11 @@ const logTypeIcons: Record<string, string> = {
   warning: '△',
 }
 
-const priorityConfig: Record<TaskPriority, { label: string; emoji: string; class: string }> = {
-  low: { label: 'Низкий', emoji: '🟢', class: 'bg-green-500/10 text-green-600 border-green-500/20' },
-  medium: { label: 'Средний', emoji: '🔵', class: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
-  high: { label: 'Высокий', emoji: '🟠', class: 'bg-orange-500/10 text-orange-600 border-orange-500/20' },
-  critical: { label: 'Критический', emoji: '🔴', class: 'bg-red-500/10 text-red-600 border-red-500/20' },
+const priorityConfig: Record<TaskPriority, { label: string; class: string }> = {
+  low: { label: 'Низкий', class: 'bg-green-500/10 text-green-600 border-green-500/20' },
+  medium: { label: 'Средний', class: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
+  high: { label: 'Высокий', class: 'bg-orange-500/10 text-orange-600 border-orange-500/20' },
+  critical: { label: 'Критический', class: 'bg-red-500/10 text-red-600 border-red-500/20' },
 }
 
 export function TaskDetailPage() {
@@ -185,14 +186,14 @@ export function TaskDetailPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Столбец</label>
                   <Select value={editStatus} onChange={(e) => setEditStatus(e.target.value)}
-                    options={columns.map((c) => ({ value: c.id, label: `${c.emoji} ${c.title}` }))} />
+                    options={columns.map((c) => ({ value: c.id, label: c.title }))} />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Приоритет</label>
                   <Select value={editPriority} onChange={(e) => setEditPriority(e.target.value as TaskPriority)}
                     options={[
-                      { value: 'low', label: '🟢 Низкий' }, { value: 'medium', label: '🔵 Средний' },
-                      { value: 'high', label: '🟠 Высокий' }, { value: 'critical', label: '🔴 Критический' },
+                      { value: 'low', label: 'Низкий' }, { value: 'medium', label: 'Средний' },
+                      { value: 'high', label: 'Высокий' }, { value: 'critical', label: 'Критический' },
                     ]} />
                 </div>
               </div>
@@ -205,7 +206,7 @@ export function TaskDetailPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Эпик</label>
                   <Select value={editEpic} onChange={(e) => setEditEpic(e.target.value)}
-                    options={[{ value: '', label: 'Без эпика' }, ...epics.filter((e) => e.status !== 'archived').map((e) => ({ value: e.id, label: `${e.emoji} ${e.name}` }))]} />
+                    options={[{ value: '', label: 'Без эпика' }, ...epics.filter((e) => e.status !== 'archived').map((e) => ({ value: e.id, label: e.name }))]} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -248,7 +249,7 @@ export function TaskDetailPage() {
               <div className="flex flex-wrap items-center gap-2">
                 {currentCol && (
                   <Badge variant="outline" className="gap-1.5">
-                    <span>{currentCol.emoji}</span> {currentCol.title}
+                    <DynamicIcon name={currentCol.icon} className="h-3.5 w-3.5" /> {currentCol.title}
                   </Badge>
                 )}
                 <Badge variant="outline" className={cn('gap-1.5 border', pri.class)}>
@@ -257,7 +258,7 @@ export function TaskDetailPage() {
                 {epic && (
                   <Badge variant="outline" className="gap-1.5 cursor-pointer hover:bg-muted transition-colors"
                     onClick={() => navigate(`/epics/${epic.id}`)}>
-                    <span>{epic.emoji}</span> {epic.name}
+                    <DynamicIcon name={epic.icon} className="h-3.5 w-3.5" /> {epic.name}
                   </Badge>
                 )}
                 {task.tags.map((tag) => (
@@ -377,7 +378,7 @@ export function TaskDetailPage() {
           {targetColumns.map((col) => (
             <Button key={col.id} size="sm" variant="outline" className="gap-1.5"
               onClick={() => moveTask(task.id, col.id)}>
-              <span>{col.emoji}</span> {col.title}
+              <DynamicIcon name={col.icon} className="h-3.5 w-3.5" /> {col.title}
             </Button>
           ))}
         </div>

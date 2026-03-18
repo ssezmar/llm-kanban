@@ -19,10 +19,11 @@ import '@xyflow/react/dist/style.css'
 import type { Column, TransitionRule } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { Trash2 } from 'lucide-react'
+import { DynamicIcon } from './ui/dynamic-icon'
 
 interface ColumnNodeData {
   label: string
-  emoji: string
+  icon: string
   description: string
   color: string
   taskCount: number
@@ -43,7 +44,7 @@ function ColumnNode({ data }: { data: ColumnNodeData }) {
       <Handle type="source" position={Position.Bottom} className="!bg-muted-foreground !w-3 !h-3 !border-2 !border-card hover:!bg-foreground !transition-colors" />
       <Handle type="target" position={Position.Left} className="!bg-muted-foreground !w-3 !h-3 !border-2 !border-card hover:!bg-foreground !transition-colors" />
       <Handle type="source" position={Position.Right} className="!bg-muted-foreground !w-3 !h-3 !border-2 !border-card hover:!bg-foreground !transition-colors" />
-      <div className="text-2xl mb-1">{data.emoji}</div>
+      <div className="flex justify-center mb-1"><DynamicIcon name={data.icon} className="h-6 w-6 text-muted-foreground" /></div>
       <div className="text-sm font-semibold">{data.label}</div>
       <div className="text-[10px] text-muted-foreground mt-0.5 line-clamp-2 max-w-[150px]">{data.description}</div>
       <div className={cn(
@@ -91,7 +92,7 @@ function buildNodes(columns: Column[], taskCounts: Record<string, number>): Node
       },
       data: {
         label: col.title,
-        emoji: col.emoji,
+        icon: col.icon,
         description: col.description,
         color: col.color,
         taskCount: taskCounts[col.id] || 0,
@@ -235,9 +236,9 @@ export function TransitionGraph({
       {interactive && selectedTransition && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 px-4 py-2.5 rounded-xl bg-card border shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
           <span className="text-sm">
-            <span className="font-medium">{columns.find((c) => c.id === selectedTransition.from)?.emoji} {columns.find((c) => c.id === selectedTransition.from)?.title}</span>
+            <span className="font-medium inline-flex items-center gap-1"><DynamicIcon name={columns.find((c) => c.id === selectedTransition.from)?.icon ?? ''} className="h-4 w-4 text-muted-foreground" />{columns.find((c) => c.id === selectedTransition.from)?.title}</span>
             <span className="text-muted-foreground mx-2">→</span>
-            <span className="font-medium">{columns.find((c) => c.id === selectedTransition.to)?.emoji} {columns.find((c) => c.id === selectedTransition.to)?.title}</span>
+            <span className="font-medium inline-flex items-center gap-1"><DynamicIcon name={columns.find((c) => c.id === selectedTransition.to)?.icon ?? ''} className="h-4 w-4 text-muted-foreground" />{columns.find((c) => c.id === selectedTransition.to)?.title}</span>
           </span>
           <button
             onClick={handleDeleteSelected}

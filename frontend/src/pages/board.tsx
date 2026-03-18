@@ -13,6 +13,7 @@ import { KanbanColumn } from '@/components/kanban-column'
 import { TaskCard } from '@/components/task-card'
 import { Button } from '@/components/ui/button'
 import { Plus, Settings } from 'lucide-react'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 
 type DragHighlight = 'allowed' | 'current' | 'blocked' | null
 
@@ -36,11 +37,11 @@ export function BoardPage() {
   }, [activeTask, columns, getAllowedTargets])
 
   const epicMap = useMemo(() => {
-    const map = new Map<string, { name: string; color: string; emoji: string }>()
+    const map = new Map<string, { name: string; color: string; icon: string }>()
     for (const task of tasks) {
       if (task.epicId) {
         const epic = epics.find((e) => e.id === task.epicId)
-        if (epic) map.set(task.id, { name: epic.name, color: epic.color, emoji: epic.emoji })
+        if (epic) map.set(task.id, { name: epic.name, color: epic.color, icon: epic.icon })
       }
     }
     return map
@@ -111,7 +112,7 @@ export function BoardPage() {
           {activeTask ? (
             <div className="w-[280px]">
               <TaskCard task={activeTask} isDragOverlay
-                epicName={activeEpic ? `${activeEpic.emoji} ${activeEpic.name}` : undefined}
+                epicName={activeEpic?.name}
                 epicColor={activeEpic?.color} />
             </div>
           ) : null}

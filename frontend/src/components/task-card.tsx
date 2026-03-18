@@ -15,11 +15,11 @@ const priorityColors: Record<string, string> = {
   critical: 'bg-red-500/15 text-red-400',
 }
 
-const priorityEmoji: Record<string, string> = {
-  low: '🟢',
-  medium: '🔵',
-  high: '🟠',
-  critical: '🔴',
+const priorityDotColors: Record<string, string> = {
+  low: 'bg-green-500',
+  medium: 'bg-blue-500',
+  high: 'bg-orange-500',
+  critical: 'bg-red-500',
 }
 
 interface TaskCardProps {
@@ -76,7 +76,7 @@ export function TaskCard({ task, isDragOverlay, epicName }: TaskCardProps) {
 
         <div className="flex flex-wrap gap-1">
           <Badge className={cn('text-[10px] px-1.5 py-0 border-0 gap-0.5', priorityColors[task.priority])}>
-            <span>{priorityEmoji[task.priority]}</span>
+            <span className={cn('h-2 w-2 rounded-full', priorityDotColors[task.priority])} />
           </Badge>
           {task.tags.slice(0, 2).map((tag) => (
             <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0 border-border/50">{tag}</Badge>

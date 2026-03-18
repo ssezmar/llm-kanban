@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { Search, Play, Trash2, CalendarClock, Plus } from 'lucide-react'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { cn } from '@/lib/utils'
 
 export function TasksPage() {
@@ -48,7 +49,7 @@ export function TasksPage() {
           {columns.map((col) => (
             <Button key={col.id} variant={filterStatus === col.id ? 'default' : 'outline'}
               size="sm" onClick={() => setFilterStatus(col.id)} className="gap-1.5">
-              <span>{col.emoji}</span> {col.title}
+              <DynamicIcon name={col.icon} className="h-3.5 w-3.5" /> {col.title}
             </Button>
           ))}
         </div>
@@ -75,7 +76,7 @@ export function TasksPage() {
                         <h3 className="font-medium truncate">{task.title}</h3>
                         {col && (
                           <Badge variant="outline" className="text-[10px] shrink-0 gap-1">
-                            <span>{col.emoji}</span> {col.title}
+                            <DynamicIcon name={col.icon} className="h-3.5 w-3.5" /> {col.title}
                           </Badge>
                         )}
                       </div>

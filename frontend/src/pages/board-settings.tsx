@@ -6,7 +6,8 @@ import { TransitionGraph } from '@/components/transition-graph'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { EmojiPicker } from '@/components/ui/emoji-picker'
+import { IconPicker } from '@/components/ui/icon-picker'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { ArrowLeft, ArrowRight, Plus, Trash2, RotateCcw } from 'lucide-react'
 import { ReactFlowProvider } from '@xyflow/react'
 
@@ -26,7 +27,7 @@ export function BoardSettingsPage() {
   const { tasks } = useTasksStore()
 
   const [newColTitle, setNewColTitle] = useState('')
-  const [newColEmoji, setNewColEmoji] = useState('📋')
+  const [newColIcon, setNewColIcon] = useState('clipboard-list')
   const [newColColor, setNewColColor] = useState('#3b82f6')
   const [newColLimit, setNewColLimit] = useState('')
   const [newColDesc, setNewColDesc] = useState('')
@@ -43,7 +44,7 @@ export function BoardSettingsPage() {
     addColumn({
       id,
       title: newColTitle.trim(),
-      emoji: newColEmoji,
+      icon: newColIcon,
       description: newColDesc.trim(),
       color: newColColor,
       limit: newColLimit ? parseInt(newColLimit) : undefined,
@@ -51,7 +52,7 @@ export function BoardSettingsPage() {
     setNewColTitle('')
     setNewColLimit('')
     setNewColDesc('')
-    setNewColEmoji('📋')
+    setNewColIcon('clipboard-list')
   }
 
   const handleAddTransition = (from: string, to: string) => {
@@ -109,7 +110,7 @@ export function BoardSettingsPage() {
           {columns.map((col) => (
             <div key={col.id} className="p-3 rounded-lg border group space-y-2">
               <div className="flex items-center gap-3">
-                <EmojiPicker value={col.emoji} onChange={(emoji) => updateColumn(col.id, { emoji })} />
+                <IconPicker value={col.icon} onChange={(icon) => updateColumn(col.id, { icon })} />
                 <div className="flex-1 space-y-1">
                   <Input
                     value={col.title}
@@ -151,7 +152,7 @@ export function BoardSettingsPage() {
             <p className="text-sm font-medium mb-3">Добавить столбец</p>
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <EmojiPicker value={newColEmoji} onChange={setNewColEmoji} />
+                <IconPicker value={newColIcon} onChange={setNewColIcon} />
                 <Input value={newColTitle} onChange={(e) => setNewColTitle(e.target.value)}
                   placeholder="Название" className="h-10 flex-1"
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddColumn())} />

@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import {
   Plus, Trash2, CalendarClock, ListChecks,
-  ChevronDown, ChevronRight,
+  ChevronDown, ChevronRight, Package,
 } from 'lucide-react'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { cn } from '@/lib/utils'
 import { useNavigate } from 'react-router-dom'
 import type { EpicStatus } from '@/lib/types'
@@ -74,7 +75,7 @@ export function EpicsPage() {
                     </button>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-lg">{epic.emoji}</span>
+                        <DynamicIcon name={epic.icon} className="h-5 w-5 text-muted-foreground" />
                         <CardTitle className="text-lg">{epic.name}</CardTitle>
                         <Badge className={cn('text-[10px] border-0', statusBadgeColors[epic.status])}>
                           {statusLabels[epic.status]}
@@ -127,7 +128,7 @@ export function EpicsPage() {
                       return (
                         <div key={col.id} className="h-full transition-all duration-500"
                           style={{ backgroundColor: col.color, width: `${(count / totalTasks) * 100}%` }}
-                          title={`${col.emoji} ${col.title}: ${count}`} />
+                          title={`${col.title}: ${count}`} />
                       )
                     })}
                   </div>
@@ -151,7 +152,7 @@ export function EpicsPage() {
                           )}
                           {col && (
                             <Badge variant="outline" className="text-[10px] gap-1 shrink-0">
-                              <span>{col.emoji}</span> {col.title}
+                              <DynamicIcon name={col.icon} className="h-3 w-3" /> {col.title}
                             </Badge>
                           )}
                           <Button size="icon" variant="ghost"
@@ -172,7 +173,7 @@ export function EpicsPage() {
 
         {epics.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-4xl mb-4">📦</p>
+            <p className="text-4xl mb-4 flex justify-center"><Package className="h-12 w-12 text-muted-foreground" /></p>
             <p className="text-muted-foreground">Нет эпиков. Создайте первый!</p>
           </div>
         )}

@@ -4,7 +4,8 @@ import { useEpicsStore } from '@/stores/epics-store'
 import { useTasksStore } from '@/stores/tasks-store'
 import { useBoardStore } from '@/stores/board-store'
 import { useAgentsStore } from '@/stores/agents-store'
-import { EmojiPicker } from '@/components/ui/emoji-picker'
+import { IconPicker } from '@/components/ui/icon-picker'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,7 +15,7 @@ import { Select } from '@/components/ui/select'
 import { Progress } from '@/components/ui/progress'
 import {
   ArrowLeft, Trash2, CalendarClock, ListChecks,
-  Plus, Save, X, Clock, Bot, Flame, TrendingUp,
+  Plus, Save, X, Clock, Bot, Flame, TrendingUp, AlertCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { EpicStatus } from '@/lib/types'
@@ -38,11 +39,11 @@ const statusBadgeColors: Record<EpicStatus, string> = {
   archived: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
 }
 
-const priorityLabels: Record<string, { emoji: string; label: string }> = {
-  low: { emoji: '🟢', label: 'Низкий' },
-  medium: { emoji: '🔵', label: 'Средний' },
-  high: { emoji: '🟠', label: 'Высокий' },
-  critical: { emoji: '🔴', label: 'Критический' },
+const priorityLabels: Record<string, { label: string; class: string }> = {
+  low: { label: 'Низкий', class: 'bg-green-500 h-2 w-2 rounded-full' },
+  medium: { label: 'Средний', class: 'bg-blue-500 h-2 w-2 rounded-full' },
+  high: { label: 'Высокий', class: 'bg-orange-500 h-2 w-2 rounded-full' },
+  critical: { label: 'Критический', class: 'bg-red-500 h-2 w-2 rounded-full' },
 }
 
 export function EpicDetailPage() {
@@ -56,7 +57,7 @@ export function EpicDetailPage() {
   const epic = epics.find((e) => e.id === id)
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(epic?.name || '')
-  const [emoji, setEmoji] = useState(epic?.emoji || '🚀')
+  const [icon, setIcon] = useState(epic?.icon || 'rocket')
   const [description, setDescription] = useState(epic?.description || '')
   const [color, setColor] = useState(epic?.color || '#3b82f6')
   const [status, setStatus] = useState<EpicStatus>(epic?.status || 'planning')
@@ -96,7 +97,7 @@ export function EpicDetailPage() {
 
   const startEditing = () => {
     setName(epic.name)
-    setEmoji(epic.emoji)
+    setIcon(epic.icon)
     setDescription(epic.description)
     setColor(epic.color)
     setStatus(epic.status)
@@ -107,7 +108,7 @@ export function EpicDetailPage() {
 
   const saveEdit = () => {
     updateEpic(epic.id, {
-      name, emoji, description, color, status,
+      name, icon, description, color, status,
       startDate: startDate ? new Date(startDate).getTime() : null,
       targetDate: targetDate ? new Date(targetDate).getTime() : null,
     })
@@ -160,7 +161,7 @@ export function EpicDetailPage() {
           {editing ? (
             <>
               <div className="flex items-start gap-4">
-                <EmojiPicker value={emoji} onChange={setEmoji} />
+                <IconPicker value={icon} onChange={setIcon} />
                 <Input value={name} onChange={(e) => setName(e.target.value)} className="text-lg h-12 font-semibold flex-1" />
               </div>
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="Описание эпика..." />
@@ -169,10 +170,10 @@ export function EpicDetailPage() {
                   <label className="text-sm font-medium">Статус</label>
                   <Select value={status} onChange={(e) => setStatus(e.target.value as EpicStatus)}
                     options={[
-                      { value: 'planning', label: '📝 Планирование' },
-                      { value: 'active', label: '🔨 Активный' },
-                      { value: 'completed', label: '✅ Завершён' },
-                      { value: 'archived', label: '📦 В архиве' },
+                      { value: 'planning', label: 'Планирование' },
+                      { value: 'active', label: 'Активный' },
+                      { value: 'completed', label: 'Завершён' },
+                      { value: 'archived', label: 'В архиве' },
                     ]} />
                 </div>
                 <div className="space-y-2">
@@ -200,7 +201,7 @@ export function EpicDetailPage() {
           ) : (
             <>
               <div className="flex items-center gap-3">
-                <span className="text-4xl">{epic.emoji}</span>
+                <DynamicIcon name={epic.icon} className="h-10 w-10 text-muted-foreground" />
                 <div>
                   <h1 className="text-2xl font-bold">{epic.name}</h1>
                   <div className="flex items-center gap-2 mt-1">
@@ -327,7 +328,7 @@ export function EpicDetailPage() {
                 </div>
                 <Progress value={timeProgress} />
                 {timeProgress > progressPercent + 15 && (
-                  <p className="text-xs text-destructive">⚠ Прогресс задач отстаёт от графика</p>
+                  <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> Прогресс задач отстаёт от графика</p>
                 )}
               </div>
             )}
@@ -343,7 +344,7 @@ export function EpicDetailPage() {
                     return (
                       <div key={col.id} className="h-full transition-all duration-500"
                         style={{ backgroundColor: col.color, width: `${(count / epicTasks.length) * 100}%` }}
-                        title={`${col.emoji} ${col.title}: ${count}`} />
+                        title={`${col.title}: ${count}`} />
                     )
                   })}
                 </div>
@@ -354,7 +355,7 @@ export function EpicDetailPage() {
                     return (
                       <span key={col.id} className="flex items-center gap-1">
                         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: col.color }} />
-                        {col.emoji} {col.title}: {count}
+                        <DynamicIcon name={col.icon} className="h-3 w-3" /> {col.title}: {count}
                       </span>
                     )
                   })}
@@ -423,7 +424,7 @@ export function EpicDetailPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium truncate">{task.title}</p>
-                    <span className="text-xs shrink-0">{pri.emoji}</span>
+                    <span className={cn('shrink-0', pri.class)} />
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     {ag && (
@@ -436,7 +437,7 @@ export function EpicDetailPage() {
                 </div>
                 {col && (
                   <Badge variant="outline" className="text-xs gap-1 shrink-0">
-                    {col.emoji} {col.title}
+                    <DynamicIcon name={col.icon} className="h-3 w-3" /> {col.title}
                   </Badge>
                 )}
                 <Button size="icon" variant="ghost"

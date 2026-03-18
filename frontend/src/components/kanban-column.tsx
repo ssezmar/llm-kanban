@@ -3,13 +3,14 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import type { Task, Column } from '@/lib/types'
 import { TaskCard } from './task-card'
 import { cn } from '@/lib/utils'
+import { DynamicIcon } from './ui/dynamic-icon'
 
 type DragHighlight = 'allowed' | 'current' | 'blocked' | null
 
 interface KanbanColumnProps {
   column: Column
   tasks: Task[]
-  epicMap?: Map<string, { name: string; color: string; emoji: string }>
+  epicMap?: Map<string, { name: string; color: string; icon: string }>
   dragHighlight?: DragHighlight
   isDragging?: boolean
 }
@@ -44,7 +45,7 @@ export function KanbanColumn({ column, tasks, epicMap, dragHighlight = null, isD
     >
       <div className="flex items-center justify-between p-3 pb-1">
         <div className="flex items-center gap-2">
-          <span className="text-lg">{column.emoji}</span>
+          <DynamicIcon name={column.icon} className="h-[18px] w-[18px] text-muted-foreground" />
           <h3 className="font-semibold text-sm tracking-tight">{column.title}</h3>
         </div>
         <span
@@ -81,7 +82,7 @@ export function KanbanColumn({ column, tasks, epicMap, dragHighlight = null, isD
               <TaskCard
                 key={task.id}
                 task={task}
-                epicName={epic ? `${epic.emoji} ${epic.name}` : undefined}
+                epicName={epic?.name}
                 epicColor={epic?.color}
               />
             )

@@ -70,7 +70,7 @@ export interface Epic {
   id: string
   name: string
   description: string
-  emoji: string
+  icon: string
   color: string
   status: EpicStatus
   startDate: number | null
@@ -82,7 +82,7 @@ export interface Epic {
 export interface Column {
   id: string
   title: string
-  emoji: string
+  icon: string // lucide icon name
   description: string
   color: string // hex color for column header accent
   limit?: number // WIP limit
@@ -119,14 +119,14 @@ export interface AgentConfig {
 }
 
 export const DEFAULT_COLUMNS: Column[] = [
-  { id: 'backlog', title: 'Бэклог', emoji: '📋', description: 'Задачи ожидают формулировки промпта и назначения агента', color: '#64748b' },
-  { id: 'prompt_ready', title: 'Промпт готов', emoji: '✍️', description: 'Промпт написан, задача готова к назначению на агента', color: '#8b5cf6' },
-  { id: 'agent_assigned', title: 'Агент назначен', emoji: '🤖', description: 'Агент выбран, ожидание запуска выполнения', color: '#6366f1' },
-  { id: 'executing', title: 'Выполняется', emoji: '⚡', description: 'LLM-агент активно работает над задачей', color: '#3b82f6', limit: 3 },
-  { id: 'review', title: 'Ревью кода', emoji: '👀', description: 'Результат агента на проверке у разработчика', color: '#eab308' },
-  { id: 'rework', title: 'Доработка', emoji: '🔄', description: 'Найдены проблемы, задача возвращена агенту', color: '#f97316' },
-  { id: 'done', title: 'Готово', emoji: '✅', description: 'Задача завершена и принята', color: '#22c55e' },
-  { id: 'failed', title: 'Провалена', emoji: '❌', description: 'Агент не справился, требуется ручное вмешательство', color: '#ef4444' },
+  { id: 'backlog', title: 'Бэклог', icon: 'clipboard-list', description: 'Задачи ожидают формулировки промпта и назначения агента', color: '#64748b' },
+  { id: 'prompt_ready', title: 'Промпт готов', icon: 'pen-tool', description: 'Промпт написан, задача готова к назначению на агента', color: '#8b5cf6' },
+  { id: 'agent_assigned', title: 'Агент назначен', icon: 'bot', description: 'Агент выбран, ожидание запуска выполнения', color: '#6366f1' },
+  { id: 'executing', title: 'Выполняется', icon: 'zap', description: 'LLM-агент активно работает над задачей', color: '#3b82f6', limit: 3 },
+  { id: 'review', title: 'Ревью кода', icon: 'eye', description: 'Результат агента на проверке у разработчика', color: '#eab308' },
+  { id: 'rework', title: 'Доработка', icon: 'refresh-cw', description: 'Найдены проблемы, задача возвращена агенту', color: '#f97316' },
+  { id: 'done', title: 'Готово', icon: 'check-circle', description: 'Задача завершена и принята', color: '#22c55e' },
+  { id: 'failed', title: 'Провалена', icon: 'x-circle', description: 'Агент не справился, требуется ручное вмешательство', color: '#ef4444' },
 ]
 
 export const DEFAULT_TRANSITIONS: TransitionRule[] = [

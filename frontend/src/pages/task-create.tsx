@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import type { TaskPriority } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -124,7 +125,7 @@ export function TaskCreatePage() {
                           : 'border-border hover:bg-muted/50'
                       )}
                     >
-                      <span>{col.emoji}</span>
+                      <DynamicIcon name={col.icon} className="h-4 w-4 text-muted-foreground" />
                       {col.title}
                     </button>
                   ))}
@@ -160,10 +161,10 @@ export function TaskCreatePage() {
                 <label className="text-sm font-medium">Приоритет</label>
                 <div className="grid grid-cols-4 gap-2">
                   {([
-                    { v: 'low', l: 'Низкий', e: '🟢' },
-                    { v: 'medium', l: 'Средний', e: '🔵' },
-                    { v: 'high', l: 'Высокий', e: '🟠' },
-                    { v: 'critical', l: 'Критический', e: '🔴' },
+                    { v: 'low', l: 'Низкий', color: 'bg-green-500' },
+                    { v: 'medium', l: 'Средний', color: 'bg-blue-500' },
+                    { v: 'high', l: 'Высокий', color: 'bg-orange-500' },
+                    { v: 'critical', l: 'Критический', color: 'bg-red-500' },
                   ] as const).map((p) => (
                     <button
                       key={p.v}
@@ -176,7 +177,7 @@ export function TaskCreatePage() {
                           : 'border-border hover:bg-muted/50'
                       )}
                     >
-                      <span>{p.e}</span>
+                      <span className={cn('h-2.5 w-2.5 rounded-full', p.color)} />
                       {p.l}
                     </button>
                   ))}
@@ -221,7 +222,7 @@ export function TaskCreatePage() {
                   onChange={(e) => setEpicId(e.target.value)}
                   options={[
                     { value: '', label: 'Без эпика' },
-                    ...epics.filter((e) => e.status !== 'archived').map((e) => ({ value: e.id, label: `${e.emoji} ${e.name}` })),
+                    ...epics.filter((e) => e.status !== 'archived').map((e) => ({ value: e.id, label: e.name })),
                   ]}
                 />
               </div>

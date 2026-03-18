@@ -15,6 +15,7 @@ import {
   ArrowLeft, Save, X, Pencil, Mail, Briefcase, Calendar,
   ListChecks, CheckCircle2, AlertCircle, Clock,
 } from 'lucide-react'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { cn } from '@/lib/utils'
 
 const roleLabels: Record<string, string> = {
@@ -225,7 +226,7 @@ export function UserProfilePage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{task.title}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    {epic && <span className="text-xs text-muted-foreground">{epic.emoji} {epic.name}</span>}
+                    {epic && <span className="text-xs text-muted-foreground flex items-center gap-1"><DynamicIcon name={epic.icon} className="h-3 w-3" /> {epic.name}</span>}
                     {task.progress > 0 && task.progress < 100 && (
                       <div className="w-16"><Progress value={task.progress} size="sm" /></div>
                     )}
@@ -233,7 +234,7 @@ export function UserProfilePage() {
                 </div>
                 {col && (
                   <Badge variant="outline" className="text-xs gap-1 shrink-0">
-                    {col.emoji} {col.title}
+                    <DynamicIcon name={col.icon} className="h-3 w-3" /> {col.title}
                   </Badge>
                 )}
               </div>
