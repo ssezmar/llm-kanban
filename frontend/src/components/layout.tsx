@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/auth-store'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { ProductTour, StartTourButton } from '@/components/product-tour'
-import { LayoutDashboard, KanbanSquare, ListChecks, LogOut, Bot, Layers } from 'lucide-react'
+import { LayoutDashboard, KanbanSquare, ListChecks, LogOut, Bot, Layers, Database, Network } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -11,6 +11,8 @@ const navItems = [
   { to: '/board', icon: KanbanSquare, label: 'Канбан' },
   { to: '/tasks', icon: ListChecks, label: 'Мониторинг' },
   { to: '/epics', icon: Layers, label: 'Эпики' },
+  { to: '/diagrams', icon: Database, label: 'Схема БД' },
+  { to: '/architecture', icon: Network, label: 'Архитектура' },
 ]
 
 export function Layout() {

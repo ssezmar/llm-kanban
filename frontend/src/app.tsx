@@ -14,6 +14,8 @@ import { EpicCreatePage } from '@/pages/epic-create'
 import { EpicDetailPage } from '@/pages/epic-detail'
 import { UserProfilePage } from '@/pages/user-profile'
 import { AgentProfilePage } from '@/pages/agent-profile'
+import { DbDiagramPage } from '@/pages/db-diagram'
+import { ArchitecturePage } from '@/pages/architecture'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore()
@@ -46,6 +48,8 @@ export function App() {
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/users/:id" element={<UserProfilePage />} />
           <Route path="/agents/:id" element={<AgentProfilePage />} />
+          <Route path="/diagrams" element={<DbDiagramPage />} />
+          <Route path="/architecture" element={<ArchitecturePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
