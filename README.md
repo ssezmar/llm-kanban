@@ -1,131 +1,107 @@
 ```markdown
-<div align="center">
-  <img src="docs/logo.png" alt="LLM Kanban" height="80" />
-  <br /><br />
+> Канбан-доска для управления задачами, которые выполняют LLM-агенты — без ручного кодинга.
 
-<strong>LLM Kanban</strong>
+LLM Kanban — платформа управления задачами для команд, которые делегируют разработку AI-агентам. Вместо назначения задач людям менеджер описывает задачу в виде промпта — агент выполняет её автономно.
 
-  <p>Task management platform for teams that delegate work to LLM agents</p>
-
-  <p>
-    <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=flat-square" alt="React" />
-    <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white&style=flat-square" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" />
-    <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square" alt="Tailwind" />
-    <img src="https://img.shields.io/badge/status-UI%20prototype-f59e0b?style=flat-square" alt="Status" />
-    <img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="License" />
-  </p>
-
-  <br />
-
-  <img src="docs/dashboard.png" alt="LLM Kanban Dashboard" width="100%" />
-</div>
+Платформа даёт полную видимость: загруженность агентов, жизненный цикл задачи, логи выполнения и аналитика производительности — в одном интерфейсе.
 
 ---
 
-## Overview
+## Возможности
 
-LLM Kanban is a task management platform designed for teams that delegate development work to AI agents. Instead of assigning tasks to people, a manager describes a task in natural language as a prompt — the agent executes it autonomously.
+**Доска и задачи**
 
-The platform provides full visibility into agent workload, task lifecycle, execution logs, and performance analytics — all in a single interface.
+- Канбан-доска с drag-and-drop карточками по настраиваемым колонкам
+- WIP-лимиты на колонки с настраиваемыми правилами переходов
+- Подзадачи, вложения, комментарии и оценки ревью на каждой задаче
+- Поле промпта в карточке — структурированные инструкции для назначенного агента
 
----
+**Агенты**
 
-## Features
+- Назначение задач агентам: Claude Sonnet, o3-mini, Gemini 2.5 Pro или кастомная модель
+- Профиль каждого агента: выполненные задачи, процент успеха, среднее время, конфигурация
+- Индикаторы статуса в реальном времени: idle, busy, offline
 
-**Board & Tasks**
+**Управление проектом**
 
-- Kanban board with drag-and-drop cards across customizable columns
-- WIP limits per column with configurable transition rules
-- Subtasks, attachments, comments, and review scores per task
-- Prompt field on every task card — structured instructions for the assigned agent
+- Группировка задач в эпики с кастомными иконками, цветами и дедлайнами
+- Настройка колонок и разрешённых переходов через визуальный редактор графа (React Flow)
+- Ролевой доступ: Admin, Manager, Developer, Viewer
 
-**Agents**
+**Инструменты разработчика**
 
-- Assign tasks to LLM agents: Claude Sonnet, o3-mini, Gemini 2.5 Pro, or custom models
-- Per-agent dashboards: completed tasks, success rate, average execution time, model config
-- Real-time status indicators: idle, busy, offline
-
-**Project Management**
-
-- Group tasks into Epics with custom icons, colors, and target dates
-- Configurable board columns and allowed transition rules via a visual graph editor (React Flow)
-- Role-based access: Admin, Manager, Developer, Viewer
-
-**Developer Tools**
-
-- Interactive ER diagram with draggable tables and relation highlights
-- System architecture diagram built into the app
-- Use-case and tech-stack reference pages
+- Интерактивная ER-диаграмма с перетаскиваемыми таблицами и подсветкой связей
+- Архитектурная диаграмма системы встроена прямо в приложение
+- Страницы Use Cases и Tech Stack для справки
 
 ---
 
-## Tech Stack
+## Стек технологий
 
 ### Frontend
 
-| Technology   | Version | Purpose                  |
-| ------------ | ------- | ------------------------ |
-| React        | 19      | UI framework             |
-| TypeScript   | 5       | Type safety              |
-| Vite         | 6       | Build tool               |
-| Tailwind CSS | 3       | Styling                  |
-| Zustand      | latest  | State management         |
-| React Flow   | latest  | Transition graph editor  |
-| dnd-kit      | latest  | Drag & Drop              |
-| D3.js        | 7       | ER diagram visualization |
-| Lucide React | latest  | Icon set                 |
+| Технология   | Версия | Назначение                |
+| ------------ | ------ | ------------------------- |
+| React        | 19     | UI-фреймворк              |
+| TypeScript   | 5      | Типизация                 |
+| Vite         | 6      | Сборщик                   |
+| Tailwind CSS | 3      | Стили                     |
+| Zustand      | latest | Управление состоянием     |
+| React Flow   | latest | Редактор графа переходов  |
+| dnd-kit      | latest | Drag & Drop               |
+| D3.js        | 7      | Визуализация ER-диаграммы |
+| Lucide React | latest | Иконки                    |
 
-### Backend _(planned)_
+### Backend _(проектируется)_
 
-| Layer          | Technology                             |
+| Слой           | Технологии                             |
 | -------------- | -------------------------------------- |
 | API Gateway    | Go, Chi, JWT, gRPC                     |
-| Microservices  | 9x Go services (gRPC + Protobuf)       |
-| Primary DB     | PostgreSQL 16                          |
-| Analytics DB   | ClickHouse 24                          |
-| Search         | Elasticsearch                          |
-| Cache          | Redis 7 Cluster + Sentinel             |
-| Event Bus      | Apache Kafka + Kafka Connect (CDC)     |
-| Object Storage | MinIO (S3-compatible)                  |
-| Infrastructure | Kubernetes 1.30, HashiCorp Vault, Helm |
-| Observability  | Prometheus, Grafana, Jaeger, Loki      |
+| Микросервисы   | 9 Go-сервисов (gRPC + Protobuf)        |
+| Основная БД    | PostgreSQL 16                          |
+| Аналитика      | ClickHouse 24                          |
+| Поиск          | Elasticsearch                          |
+| Кэш            | Redis 7 Cluster + Sentinel             |
+| Шина событий   | Apache Kafka + Kafka Connect (CDC)     |
+| Хранилище      | MinIO (S3-compatible)                  |
+| Инфраструктура | Kubernetes 1.30, HashiCorp Vault, Helm |
+| Мониторинг     | Prometheus, Grafana, Jaeger, Loki      |
 
 ---
 
-## Project Structure
+## Структура проекта
 ```
 
 xlurr-llm-kanban/
 ├── docs/
-│ ├── logo.png # Project logotype
-│ └── dashboard.png # Main dashboard screenshot
+│ ├── logo.png # Логотип проекта
+│ └── dashboard.png # Скриншот главного дашборда
 ├── frontend/
 │ ├── src/
 │ │ ├── components/
-│ │ │ └── ui/ # Base UI primitives (Button, Card, Dialog, ...)
+│ │ │ └── ui/ # Базовые UI-примитивы (Button, Card, Dialog, ...)
 │ │ ├── pages/
-│ │ │ ├── board.tsx # Kanban board
-│ │ │ ├── dashboard.tsx # Main dashboard
-│ │ │ ├── agent-profile.tsx # Agent profile & metrics
-│ │ │ ├── epics.tsx # Epic management
-│ │ │ ├── architecture.tsx # System architecture diagram
+│ │ │ ├── board.tsx # Канбан-доска
+│ │ │ ├── dashboard.tsx # Главный дашборд
+│ │ │ ├── agent-profile.tsx # Профиль агента и метрики
+│ │ │ ├── epics.tsx # Управление эпиками
+│ │ │ ├── architecture.tsx # Архитектурная диаграмма
 │ │ │ ├── board-settings.tsx
 │ │ │ └── ...
-│ │ ├── stores/ # Zustand stores
-│ │ ├── hooks/ # Custom React hooks
-│ │ └── lib/ # Utilities, mock data, types
+│ │ ├── stores/ # Zustand-хранилища
+│ │ ├── hooks/ # Кастомные хуки
+│ │ └── lib/ # Утилиты, mock-данные, типы
 │ ├── vite.config.ts
 │ └── tailwind.config.js
-└── class-diagram.html # Standalone interactive ER diagram
+└── class-diagram.html # Автономная интерактивная ER-диаграмма
 
 ````
 
 ***
 
-## Getting Started
+## Быстрый старт
 
-**Requirements:** Node.js >= 20
+**Требования:** Node.js >= 20
 
 ```bash
 git clone https://github.com/xlurr/llm-kanban.git
@@ -134,40 +110,34 @@ npm install
 npm run dev
 ````
 
-App will be available at `http://localhost:5173`.
+Открыть: [**http://localhost:5173**](http://localhost:5173)
 
 ---
 
-## Supported Agents
+## Поддерживаемые агенты
 
-| Agent        | Model           | Avg. Execution Time | Success Rate |
-| ------------ | --------------- | ------------------- | ------------ |
-| Claude Code  | claude-sonnet-4 | ~12 min             | 94%          |
-| Codex CLI    | o3-mini         | ~8 min              | 87%          |
-| Gemini CLI   | gemini-2.5-pro  | ~15 min             | 81%          |
-| Custom Agent | llama-3.1-70b   | ~25 min             | 75%          |
+| Агент        | Модель          | Среднее время | Успешность |
+| ------------ | --------------- | ------------- | ---------- |
+| Claude Code  | claude-sonnet-4 | ~12 мин       | 94%        |
+| Codex CLI    | o3-mini         | ~8 мин        | 87%        |
+| Gemini CLI   | gemini-2.5-pro  | ~15 мин       | 81%        |
+| Custom Agent | llama-3.1-70b   | ~25 мин       | 75%        |
 
 ---
 
-## Roadmap
+## Роадмап
 
-- [x] Kanban UI with drag-and-drop
-- [x] Agent profiles and performance metrics
-- [x] Transition graph editor (React Flow)
-- [x] Epic management
-- [x] ER diagram and architecture diagram
-- [x] Use-case and tech-stack reference pages
-- [ ] Go backend (microservices)
-- [ ] Real-time updates via WebSocket
-- [ ] Agent task execution pipeline
-- [ ] JWT authentication
-- [ ] Analytics dashboard (ClickHouse)
+- [x] Канбан UI с drag-and-drop
+- [x] Профили агентов и метрики производительности
+- [x] Редактор графа переходов (React Flow)
+- [x] Управление эпиками
+- [x] ER-диаграмма и архитектурная диаграмма
+- [x] Страницы Use Cases и Tech Stack
+- [ ] Go-бэкенд (микросервисы)
+- [ ] Real-time обновления через WebSocket
+- [ ] Пайплайн выполнения задач агентами
+- [ ] Аутентификация (JWT)
+- [ ] Аналитический дашборд (ClickHouse)
 - [ ] Kubernetes deployment manifests
 
 ---
-
-## License
-
-```
-
-```
