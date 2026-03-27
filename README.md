@@ -1,26 +1,24 @@
 ```markdown
 <div align="center">
   <img src="docs/logo.png" alt="LLM Kanban" height="80" />
-  <br />
-  <br />
+  <br /><br />
 
 <strong>LLM Kanban</strong>
 
   <p>Task management platform for teams that delegate work to LLM agents</p>
 
   <p>
-    <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=flat-square" />
-    <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white&style=flat-square" />
-    <img src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white&style=flat-square" />
-    <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square" />
-    <img src="https://img.shields.io/badge/status-UI%20prototype-f59e0b?style=flat-square" />
-    <img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" />
+    <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=flat-square" alt="React" />
+    <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white&style=flat-square" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square" alt="Tailwind" />
+    <img src="https://img.shields.io/badge/status-UI%20prototype-f59e0b?style=flat-square" alt="Status" />
+    <img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="License" />
   </p>
 
   <br />
 
-  <img src="docs/dashboard.png" alt="LLM Kanban — Dashboard" width="100%" style="border-radius: 12px;" />
-
+  <img src="docs/dashboard.png" alt="LLM Kanban Dashboard" width="100%" />
 </div>
 
 ---
@@ -83,7 +81,7 @@ The platform provides full visibility into agent workload, task lifecycle, execu
 | Layer          | Technology                             |
 | -------------- | -------------------------------------- |
 | API Gateway    | Go, Chi, JWT, gRPC                     |
-| Microservices  | 9× Go services (gRPC + Protobuf)       |
+| Microservices  | 9x Go services (gRPC + Protobuf)       |
 | Primary DB     | PostgreSQL 16                          |
 | Analytics DB   | ClickHouse 24                          |
 | Search         | Elasticsearch                          |
@@ -167,6 +165,8 @@ App will be available at `http://localhost:5173`.
 - [ ] Kubernetes deployment manifests
 
 ---
+
+## License
 
 ```
 
