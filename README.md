@@ -1,10 +1,12 @@
 # LLM Kanban
 
-Kanban-board for orchestrating tasks across LLM agents — Claude Code, Codex CLI, Gemini CLI and custom pipelines.
+![logo](docs/logo.jpg)
 
-## ![Kanban logo](docs/logo.png)
+> Kanban-доска для оркестрации задач LLM-агентов — Claude Code, Codex CLI, Gemini CLI и кастомных пайплайнов.
 
-## Quick Start
+---
+
+## Быстрый старт
 
 **Requirements:** Node.js 18+
 
@@ -14,7 +16,7 @@ cd llm-kanban/frontend
 npm install && npm run dev
 ```
 
-[http://localhost:5173](http://localhost:5173)
+Открыть: [http://localhost:5173](http://localhost:5173)
 
 | Email                   | Password   | Role      |
 | ----------------------- | ---------- | --------- |
@@ -23,45 +25,85 @@ npm install && npm run dev
 
 ---
 
-## Features
+## Доска
 
-### Board
+![board](docs/board.jpg)
 
-- Drag-and-drop columns via `@dnd-kit`
-- Configurable transition rules — state machine prevents invalid status moves
-- WIP limits per column (default: Executing → 3)
-- Column management via Board Settings
-
-### Tasks
-
-- Prompt-first workflow — each task carries a prompt passed to the assigned agent
-- Subtask checklist with progress tracking
-- CI/CD pipeline visualization with DAG stage dependencies
-- Execution logs (info / success / warning / error)
-- Code review scoring (1–10) with comments
-- File and link attachments
-
-### Epics
-
-- Task grouping with deadlines and completion progress
-- Column distribution breakdown per epic
-
-### Agents
-
-- Supported types: `claude-code`, `codex`, `gemini-cli`, `custom`
-- Per-agent metrics: tasks completed, success rate, avg execution time, avg review score
-
-### DB Diagram
-
-- Interactive schema viewer built on `@xyflow/react`
-- Two depth modes: table groups overview and full field-level detail
-- Hover highlights related tables; field-level search
-
-![Kanban dashboard](docs/dashboard.png)
+Центральный рабочий экран. Задачи распределены по колонкам пайплайна — от Бэклога до Done. Карточка отображает эпик, теги, прогресс подзадач, дедлайн и назначенного агента. Колонка **Executing** имеет WIP-лимит (2/3) — при превышении новые задачи не принимаются. Drag-and-drop работает только по разрешённым переходам стейт-машины.
 
 ---
 
-## Task Pipeline
+## Дашборд
+
+### Аналитика
+
+![analytics](docs/analys_dashboard.jpg)
+
+Активность за 14 дней, donut-диаграмма приоритетов, распределение задач по колонкам и гистограмма оценок ревью. Средняя оценка выполнения агентами — **8.5/10**.
+
+---
+
+### События и пользователи
+
+![events](docs/ivents_dashboard.jpg)
+
+Лента последних событий с цветовой индикацией типа (success / warning / info), топ активных пользователей с рейтингом, популярные теги и агрегированные метрики по проекту.
+
+---
+
+### Метрики агентов
+
+![metrics](docs/metrics_dasboard.jpg)
+
+Сравнение успешности по типам агентов: Claude Code **94%**, Codex CLI **87%**, Gemini CLI **81%**, Custom **75%**. График нагрузки по часам показывает пиковое время активности.
+
+---
+
+## Эпики
+
+### Список эпиков
+
+![epics](docs/epics.jpg)
+
+Эпики с прогресс-барами и цветовой разбивкой по статусам задач. Отображаются дедлайны, процент выполнения и текущий статус — Активный / Завершён / В планах.
+
+---
+
+### Задачи внутри эпика
+
+![tasks in epics](docs/tasks_epics.jpg)
+
+Раскрытый эпик показывает привязанные задачи с текущим статусом прямо в строке — без перехода на доску. Неназначенные задачи проекта привязываются к эпику в один клик.
+
+---
+
+## Задачи
+
+### Логи выполнения
+
+![execution logs](docs/log_task.jpg)
+
+Лента логов агента в реальном времени. Каждое событие имеет тип (success / warning / info) и точный таймстемп — полный трейс от старта задачи до финализации.
+
+---
+
+### Ревью
+
+![review](docs/review_task.jpg)
+
+Авто-ревью по завершении: оценка 1–10 с визуальным индикатором, имя ревьюера, дата и текстовый комментарий. Результаты агрегируются в дашборде и профиле агента.
+
+---
+
+## Онбординг
+
+![product tour](docs/demo_func.jpg)
+
+Встроенный интерактивный тур из 24 шагов. Запускается автоматически при первом входе — проводит по всем ключевым экранам и объясняет концепцию prompt-first workflow.
+
+---
+
+## Пайплайн задачи
 
 ```
 Backlog → Prompt Ready → Agent Assigned → Executing → Review → Done
@@ -71,31 +113,32 @@ Backlog → Prompt Ready → Agent Assigned → Executing → Review → Done
                                 Failed → Backlog
 ```
 
-All transitions are configurable in **Board Settings → Transitions**.
+Все переходы настраиваются в **Board Settings → Transitions**.
 
 ---
 
-## Stack
+## Стек
 
-| Layer       | Technology                       |
+| Слой        | Технологии                       |
 | ----------- | -------------------------------- |
 | UI          | React 19, Vite 6, TypeScript 5.7 |
-| Styling     | Tailwind CSS 3, shadcn/ui        |
-| State       | Zustand 5 + localStorage         |
-| Routing     | React Router v7                  |
+| Стили       | Tailwind CSS 3, shadcn/ui        |
+| Стейт       | Zustand 5 + localStorage         |
+| Роутинг     | React Router v7                  |
 | Drag & Drop | @dnd-kit/core, @dnd-kit/sortable |
-| Diagrams    | @xyflow/react 12, Recharts 3     |
+| Диаграммы   | @xyflow/react 12, Recharts 3     |
 
 ---
 
-## Project Structure
+## Структура проекта
 
 ```
 llm-kanban/
-├── class-diagram.html       # Standalone DB diagram (D3.js)
+├── docs/
+├── class-diagram.html
 ├── frontend/
 │   └── src/
-│       ├── app.tsx          # Routing + ProtectedRoute
+│       ├── app.tsx
 │       ├── components/
 │       │   ├── kanban-column.tsx
 │       │   ├── task-card.tsx
@@ -126,11 +169,11 @@ llm-kanban/
 
 ---
 
-## Data Schema
+## Схема данных
 
-Full interactive schema available at `/diagrams` or open `class-diagram.html` directly.
+Полная интерактивная схема — `/diagrams` или открыть `class-diagram.html` напрямую.
 
-| Group         | Tables                                                                |
+| Группа        | Таблицы                                                               |
 | ------------- | --------------------------------------------------------------------- |
 | Core          | `tasks`, `epics`, `task_dependencies`                                 |
 | Actors        | `users`, `agents`, `teams`, `team_members`                            |
