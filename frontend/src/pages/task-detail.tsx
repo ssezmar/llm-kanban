@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTasksStore } from '@/stores/tasks-store'
 import { useAgentsStore } from '@/stores/agents-store'
@@ -17,6 +17,7 @@ import {
   ArrowLeft, Play, Clock, MessageSquare, Terminal, Star,
   CalendarClock, Plus, Trash2, CheckSquare, Square, Send,
   Save, X, Pencil, User, Bot, Tag, Flame,
+  Github, GitPullRequest, CircleDot, ExternalLink, Link2, Unlink,
 } from 'lucide-react'
 import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { PageHero } from '@/components/page-hero'
@@ -24,6 +25,9 @@ import { PipelinesSection } from '@/components/pipeline-stages'
 import { AttachmentsPanel } from '@/components/attachments-panel'
 import { cn } from '@/lib/utils'
 import type { TaskPriority } from '@/lib/types'
+import { useGitHubStore } from '@/stores/github-store'
+import { useGitHubIssuesStore } from '@/stores/github-issues-store'
+import { useGitHubPRsStore } from '@/stores/github-prs-store'
 
 const TASK_COLORS = [
   '#3b82f6', '#ef4444', '#f97316', '#eab308', '#22c55e',
@@ -512,6 +516,9 @@ export function TaskDetailPage() {
         />
       )}
 
+      {/* GitHub Links */}
+      {!editing && <GitHubLinksSection taskId={task.id} task={task} updateTask={updateTask} />}
+
       {/* Attachments */}
       {!editing && (
         <AttachmentsPanel
@@ -562,5 +569,238 @@ export function TaskDetailPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+// ── GitHub Links Section ──
+
+function GitHubLinksSection({
+  taskId, task, updateTask,
+}: {
+  taskId: string
+  task: { githubIssueNumber?: number | null; githubPrNumbers?: number[] }
+  updateTask: (id: string, updates: Record<string, unknown>) => void
+}) {
+  const navigate = useNavigate()
+  const { isConnected, owner, repo } = useGitHubStore()
+  const { issues, fetchAll: fetchIssues } = useGitHubIssuesStore()
+  const { pullRequests, fetchAll: fetchPRs } = useGitHubPRsStore()
+  const [showLinkIssue, setShowLinkIssue] = useState(false)
+  const [showLinkPR, setShowLinkPR] = useState(false)
+  const [issueInput, setIssueInput] = useState('')
+  const [prInput, setPrInput] = useState('')
+
+  useEffect(() => {
+    if (isConnected && showLinkIssue && issues.length === 0) fetchIssues()
+    if (isConnected && showLinkPR && pullRequests.length === 0) fetchPRs()
+  }, [isConnected, showLinkIssue, showLinkPR])
+
+  const linkedIssue = task.githubIssueNumber
+  const linkedPRs = task.githubPrNumbers || []
+  const ghUrl = owner && repo ? `https://github.com/${owner}/${repo}` : null
+
+  const linkIssue = (num: number) => {
+    updateTask(taskId, { githubIssueNumber: num })
+    setShowLinkIssue(false)
+    setIssueInput('')
+  }
+
+  const unlinkIssue = () => {
+    updateTask(taskId, { githubIssueNumber: null })
+  }
+
+  const linkPR = (num: number) => {
+    if (linkedPRs.includes(num)) return
+    updateTask(taskId, { githubPrNumbers: [...linkedPRs, num] })
+    setShowLinkPR(false)
+    setPrInput('')
+  }
+
+  const unlinkPR = (num: number) => {
+    updateTask(taskId, { githubPrNumbers: linkedPRs.filter(n => n !== num) })
+  }
+
+  // Find cached data for linked items
+  const issueData = linkedIssue ? issues.find(i => i.number === linkedIssue) : null
+  const prDataMap = new Map(pullRequests.map(pr => [pr.number, pr]))
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg flex items-center gap-2">
+          <Github className="h-5 w-5" /> GitHub
+          {!isConnected && <span className="text-xs font-normal text-muted-foreground">(не подключено)</span>}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Linked Issue */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium flex items-center gap-1.5">
+              <CircleDot className="h-3.5 w-3.5 text-muted-foreground" /> Issue
+            </span>
+            {isConnected && !linkedIssue && (
+              <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => setShowLinkIssue(!showLinkIssue)}>
+                <Link2 className="h-3 w-3" /> Link
+              </Button>
+            )}
+          </div>
+
+          {linkedIssue ? (
+            <div className="flex items-center gap-3 rounded-lg border bg-muted/30 px-3 py-2.5 group">
+              <CircleDot className={cn('h-4 w-4 shrink-0', issueData?.state === 'closed' ? 'text-purple-500' : 'text-green-500')} />
+              <div className="flex-1 min-w-0">
+                <button
+                  className="text-sm font-medium hover:underline text-left truncate block w-full"
+                  onClick={() => navigate(`/github/issues/${linkedIssue}`)}
+                >
+                  {issueData ? issueData.title : `Issue #${linkedIssue}`}
+                </button>
+                <span className="text-xs text-muted-foreground font-mono">#{linkedIssue}</span>
+              </div>
+              {ghUrl && (
+                <a href={`${ghUrl}/issues/${linkedIssue}`} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                  <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                </a>
+              )}
+              <button onClick={unlinkIssue} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Unlink className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive transition-colors" />
+              </button>
+            </div>
+          ) : !showLinkIssue ? (
+            <p className="text-xs text-muted-foreground">Нет привязанного issue</p>
+          ) : null}
+
+          {showLinkIssue && (
+            <div className="space-y-2 animate-fade-in">
+              <div className="flex gap-2">
+                <Input
+                  value={issueInput}
+                  onChange={(e) => setIssueInput(e.target.value)}
+                  placeholder="Issue # (например 42)"
+                  className="h-8 text-sm font-mono"
+                  onKeyDown={(e) => { if (e.key === 'Enter' && issueInput) linkIssue(+issueInput) }}
+                />
+                <Button size="sm" className="h-8" onClick={() => issueInput && linkIssue(+issueInput)} disabled={!issueInput}>
+                  Link
+                </Button>
+              </div>
+              {issues.length > 0 && (
+                <div className="max-h-32 overflow-y-auto space-y-1 border rounded-lg p-1">
+                  {issues.slice(0, 10).map(i => (
+                    <button
+                      key={i.id}
+                      onClick={() => linkIssue(i.number)}
+                      className="w-full flex items-center gap-2 text-left text-xs px-2 py-1.5 rounded hover:bg-muted transition-colors"
+                    >
+                      <CircleDot className="h-3 w-3 text-green-500 shrink-0" />
+                      <span className="font-mono text-muted-foreground">#{i.number}</span>
+                      <span className="truncate">{i.title}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Separator */}
+        <div className="border-t" />
+
+        {/* Linked PRs */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium flex items-center gap-1.5">
+              <GitPullRequest className="h-3.5 w-3.5 text-muted-foreground" /> Pull Requests
+              {linkedPRs.length > 0 && <span className="text-xs text-muted-foreground font-normal">{linkedPRs.length}</span>}
+            </span>
+            {isConnected && (
+              <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => setShowLinkPR(!showLinkPR)}>
+                <Link2 className="h-3 w-3" /> Link
+              </Button>
+            )}
+          </div>
+
+          {linkedPRs.length > 0 ? (
+            <div className="space-y-1.5">
+              {linkedPRs.map(num => {
+                const pr = prDataMap.get(num)
+                return (
+                  <div key={num} className="flex items-center gap-3 rounded-lg border bg-muted/30 px-3 py-2.5 group">
+                    {pr?.merged ? (
+                      <GitPullRequest className="h-4 w-4 text-purple-500 shrink-0" />
+                    ) : (
+                      <GitPullRequest className={cn('h-4 w-4 shrink-0', pr?.state === 'closed' ? 'text-red-500' : 'text-green-500')} />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <button
+                        className="text-sm font-medium hover:underline text-left truncate block w-full"
+                        onClick={() => navigate(`/github/prs/${num}`)}
+                      >
+                        {pr ? pr.title : `PR #${num}`}
+                      </button>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span className="font-mono">#{num}</span>
+                        {pr && (
+                          <>
+                            <span className="font-mono text-[10px] bg-muted px-1 rounded">{pr.head.ref}</span>
+                            {pr.merged && <Badge variant="outline" className="text-[10px] px-1 py-0 border-purple-500/30 text-purple-500">merged</Badge>}
+                            <span className="text-green-500">+{pr.additions}</span>
+                            <span className="text-red-500">-{pr.deletions}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    {ghUrl && (
+                      <a href={`${ghUrl}/pull/${num}`} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                      </a>
+                    )}
+                    <button onClick={() => unlinkPR(num)} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Unlink className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive transition-colors" />
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          ) : !showLinkPR ? (
+            <p className="text-xs text-muted-foreground">Нет привязанных PR</p>
+          ) : null}
+
+          {showLinkPR && (
+            <div className="space-y-2 animate-fade-in">
+              <div className="flex gap-2">
+                <Input
+                  value={prInput}
+                  onChange={(e) => setPrInput(e.target.value)}
+                  placeholder="PR # (например 15)"
+                  className="h-8 text-sm font-mono"
+                  onKeyDown={(e) => { if (e.key === 'Enter' && prInput) linkPR(+prInput) }}
+                />
+                <Button size="sm" className="h-8" onClick={() => prInput && linkPR(+prInput)} disabled={!prInput}>
+                  Link
+                </Button>
+              </div>
+              {pullRequests.length > 0 && (
+                <div className="max-h-32 overflow-y-auto space-y-1 border rounded-lg p-1">
+                  {pullRequests.filter(pr => !linkedPRs.includes(pr.number)).slice(0, 10).map(pr => (
+                    <button
+                      key={pr.id}
+                      onClick={() => linkPR(pr.number)}
+                      className="w-full flex items-center gap-2 text-left text-xs px-2 py-1.5 rounded hover:bg-muted transition-colors"
+                    >
+                      <GitPullRequest className="h-3 w-3 text-green-500 shrink-0" />
+                      <span className="font-mono text-muted-foreground">#{pr.number}</span>
+                      <span className="truncate">{pr.title}</span>
+                      <span className="font-mono text-[10px] text-muted-foreground ml-auto">{pr.head.ref}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
