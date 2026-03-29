@@ -102,6 +102,8 @@ export interface Task {
   color: string // hex color for left border accent
   pipelines?: Pipeline[]
   attachments?: Attachment[]
+  githubIssueNumber?: number | null   // linked GitHub issue
+  githubPrNumbers?: number[]          // linked GitHub PRs
 }
 
 export type EpicStatus = 'planning' | 'active' | 'completed' | 'archived'

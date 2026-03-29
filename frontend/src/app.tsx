@@ -18,6 +18,12 @@ import { DbDiagramPage } from '@/pages/db-diagram'
 import { ArchitecturePage } from '@/pages/architecture'
 import { UseCasesPage } from '@/pages/use-cases'
 import { TechStackPage } from '@/pages/tech-stack'
+import { GitHubSettingsPage } from '@/pages/github-settings'
+import { GitHubIssuesPage } from '@/pages/github-issues'
+import { GitHubIssueDetailPage } from '@/pages/github-issue-detail'
+import { GitHubPRsPage } from '@/pages/github-prs'
+import { GitHubPRDetailPage } from '@/pages/github-pr-detail'
+import { GitHubActionsPage } from '@/pages/github-actions'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore()
@@ -54,6 +60,12 @@ export function App() {
           <Route path="/architecture" element={<ArchitecturePage />} />
           <Route path="/use-cases" element={<UseCasesPage />} />
           <Route path="/tech-stack" element={<TechStackPage />} />
+          <Route path="/github/settings" element={<GitHubSettingsPage />} />
+          <Route path="/github/issues" element={<GitHubIssuesPage />} />
+          <Route path="/github/issues/:number" element={<GitHubIssueDetailPage />} />
+          <Route path="/github/prs" element={<GitHubPRsPage />} />
+          <Route path="/github/prs/:number" element={<GitHubPRDetailPage />} />
+          <Route path="/github/actions" element={<GitHubActionsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

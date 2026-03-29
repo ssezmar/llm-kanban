@@ -1,80 +1,116 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth-store'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { ProductTour, StartTourButton } from '@/components/product-tour'
-import { LayoutDashboard, KanbanSquare, ListChecks, LogOut, Bot, Layers, Database, Network, Users, Cpu, FileText, ChevronDown } from 'lucide-react'
+import {
+  LayoutDashboard, KanbanSquare, ListChecks, LogOut, Bot, Layers,
+  Database, Network, Users, Cpu, Github, CircleDot, GitPullRequest,
+  Play, Settings, Menu, X, ChevronRight,
+} from 'lucide-react'
+import { useGitHubStore } from '@/stores/github-store'
 import { cn } from '@/lib/utils'
 
-const mainNavItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Дашборд' },
-  { to: '/board', icon: KanbanSquare, label: 'Канбан' },
-  { to: '/tasks', icon: ListChecks, label: 'Мониторинг' },
-  { to: '/epics', icon: Layers, label: 'Эпики' },
+// ── Nav structure ──
+
+interface NavItem {
+  to: string
+  icon: typeof LayoutDashboard
+  label: string
+}
+
+interface NavGroup {
+  title: string
+  items: NavItem[]
+  indicator?: 'github'
+}
+
+const navGroups: NavGroup[] = [
+  {
+    title: 'Основное',
+    items: [
+      { to: '/dashboard', icon: LayoutDashboard, label: 'Дашборд' },
+      { to: '/board', icon: KanbanSquare, label: 'Канбан' },
+      { to: '/tasks', icon: ListChecks, label: 'Задачи' },
+      { to: '/epics', icon: Layers, label: 'Эпики' },
+    ],
+  },
+  {
+    title: 'GitHub',
+    indicator: 'github',
+    items: [
+      { to: '/github/issues', icon: CircleDot, label: 'Issues' },
+      { to: '/github/prs', icon: GitPullRequest, label: 'Pull Requests' },
+      { to: '/github/actions', icon: Play, label: 'Actions' },
+      { to: '/github/settings', icon: Settings, label: 'Настройки' },
+    ],
+  },
+  {
+    title: 'Документация',
+    items: [
+      { to: '/diagrams', icon: Database, label: 'Схема БД' },
+      { to: '/architecture', icon: Network, label: 'Архитектура' },
+      { to: '/use-cases', icon: Users, label: 'Прецеденты' },
+      { to: '/tech-stack', icon: Cpu, label: 'Технологии' },
+    ],
+  },
 ]
 
-const schemaNavItems = [
-  { to: '/diagrams', icon: Database, label: 'Схема БД' },
-  { to: '/architecture', icon: Network, label: 'Архитектура' },
-  { to: '/use-cases', icon: Users, label: 'Прецеденты' },
-  { to: '/tech-stack', icon: Cpu, label: 'Технологии' },
-]
+const allNavItems = navGroups.flatMap(g => g.items)
 
-const allNavItems = [...mainNavItems, ...schemaNavItems]
+// ── Sidebar ──
 
-function SchemaDropdown({ pathname }: { pathname: string }) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-  const isSchemaActive = schemaNavItems.some((i) => pathname === i.to || pathname.startsWith(i.to + '/'))
-  const activeItem = schemaNavItems.find((i) => pathname === i.to || pathname.startsWith(i.to + '/'))
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
+function Sidebar({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
+  const { isConnected } = useGitHubStore()
 
   return (
-    <div ref={ref} className="relative">
-      <Button
-        variant={isSchemaActive ? 'secondary' : 'ghost'}
-        size="sm"
-        className={cn('gap-2 transition-all', isSchemaActive && 'shadow-sm')}
-        onClick={() => setOpen(!open)}
-      >
-        <FileText className="h-4 w-4" />
-        {activeItem ? activeItem.label : 'Документация'}
-        <ChevronDown className={cn('h-3 w-3 transition-transform', open && 'rotate-180')} />
-      </Button>
-      {open && (
-        <div className="absolute top-full left-0 mt-1.5 w-52 rounded-xl border bg-popover shadow-xl shadow-foreground/5 p-1.5 animate-scale-in z-50">
-          {schemaNavItems.map(({ to, icon: Icon, label }) => {
-            const isActive = pathname === to || pathname.startsWith(to + '/')
-            return (
-              <Link key={to} to={to} onClick={() => setOpen(false)}>
-                <div className={cn(
-                  'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors',
-                  isActive ? 'bg-secondary font-medium' : 'hover:bg-muted'
-                )}>
-                  <Icon className="h-4 w-4 text-muted-foreground" />
-                  {label}
-                </div>
-              </Link>
-            )
-          })}
+    <div className="flex flex-col gap-6 py-4">
+      {navGroups.map((group) => (
+        <div key={group.title}>
+          <div className="flex items-center gap-2 px-3 mb-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+              {group.title}
+            </span>
+            {group.indicator === 'github' && isConnected && (
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
+              </span>
+            )}
+          </div>
+          <nav className="space-y-0.5">
+            {group.items.map(({ to, icon: Icon, label }) => {
+              const isActive = pathname === to || pathname.startsWith(to + '/')
+              return (
+                <Link key={to} to={to} onClick={onNavigate}>
+                  <div className={cn(
+                    'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150',
+                    isActive
+                      ? 'bg-foreground/[0.06] dark:bg-foreground/[0.08] font-medium text-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-foreground/[0.03]'
+                  )}>
+                    <Icon className={cn('h-4 w-4 shrink-0', isActive ? 'text-foreground' : 'text-muted-foreground/70')} />
+                    {label}
+                    {isActive && <ChevronRight className="h-3 w-3 ml-auto text-muted-foreground/50" />}
+                  </div>
+                </Link>
+              )
+            })}
+          </nav>
         </div>
-      )}
+      ))}
     </div>
   )
 }
+
+// ── Layout ──
 
 export function Layout() {
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
   const location = useLocation()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -85,37 +121,27 @@ export function Layout() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b glass">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <div className="flex items-center gap-6">
+        <div className="flex h-14 items-center justify-between px-4 lg:px-6">
+          <div className="flex items-center gap-3">
+            {/* Mobile menu toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden h-8 w-8"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
+
             <Link to="/dashboard" className="flex items-center gap-2.5 font-bold text-lg group">
               <div className="relative">
                 <Bot className="h-6 w-6 text-foreground dark:text-primary transition-transform group-hover:scale-110" />
                 <div className="absolute inset-0 blur-lg bg-foreground/5 dark:bg-primary/20 group-hover:bg-foreground/10 dark:group-hover:bg-primary/30 transition-colors" />
               </div>
-              <span className="hidden sm:inline tracking-tight">LLM Kanban</span>
+              <span className="tracking-tight">LLM Kanban</span>
             </Link>
-            <nav data-tour="main-nav" className="hidden md:flex items-center gap-0.5">
-              {mainNavItems.map(({ to, icon: Icon, label }) => {
-                const isActive = location.pathname === to || location.pathname.startsWith(to + '/')
-                return (
-                  <Link key={to} to={to}>
-                    <Button
-                      variant={isActive ? 'secondary' : 'ghost'}
-                      size="sm"
-                      className={cn(
-                        'gap-2 transition-all',
-                        isActive && 'shadow-sm'
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {label}
-                    </Button>
-                  </Link>
-                )
-              })}
-              <SchemaDropdown pathname={location.pathname} />
-            </nav>
           </div>
+
           <div className="flex items-center gap-2">
             <StartTourButton />
             <ThemeToggle />
@@ -135,31 +161,29 @@ export function Layout() {
         </div>
       </header>
 
-      {/* Mobile nav */}
-      <nav className="md:hidden sticky top-14 z-30 border-b glass">
-        <div className="container mx-auto flex gap-1 px-4 py-1.5 overflow-x-auto">
-          {allNavItems.map(({ to, icon: Icon, label }) => {
-            const isActive = location.pathname === to
-            return (
-              <Link key={to} to={to}>
-                <Button
-                  variant={isActive ? 'secondary' : 'ghost'}
-                  size="sm"
-                  className="gap-1.5 shrink-0 text-xs"
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {label}
-                </Button>
-              </Link>
-            )
-          })}
-        </div>
-      </nav>
+      <div className="flex">
+        {/* Desktop sidebar */}
+        <aside className="hidden lg:block w-56 shrink-0 border-r sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
+          <Sidebar pathname={location.pathname} />
+        </aside>
 
-      {/* Main content with page animation */}
-      <main key={location.pathname} className="container mx-auto px-4 py-6 animate-fade-in-up">
-        <Outlet />
-      </main>
+        {/* Mobile sidebar overlay */}
+        {mobileOpen && (
+          <>
+            <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden" onClick={() => setMobileOpen(false)} />
+            <aside className="fixed left-0 top-14 bottom-0 w-64 bg-background border-r z-40 lg:hidden overflow-y-auto animate-slide-in-left">
+              <Sidebar pathname={location.pathname} onNavigate={() => setMobileOpen(false)} />
+            </aside>
+          </>
+        )}
+
+        {/* Main content */}
+        <main key={location.pathname} className="flex-1 min-w-0 px-4 lg:px-8 py-6 animate-fade-in-up">
+          <div className="max-w-6xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
 
       {/* Product tour overlay */}
       <ProductTour />
