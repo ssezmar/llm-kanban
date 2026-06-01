@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { SnakeBackdrop } from '@/components/snake-backdrop'
 import { Bot } from 'lucide-react'
 
 export function AuthPage() {
@@ -41,8 +42,9 @@ export function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 gradient-mesh relative">
+    <div className="min-h-screen flex items-center justify-center px-4 gradient-mesh relative overflow-hidden">
       <div className="absolute inset-0 bg-background/80" />
+      <SnakeBackdrop className="absolute inset-0" />
       <Card className="w-full max-w-md relative animate-scale-in shadow-2xl shadow-foreground/5 dark:shadow-primary/10 border-border/50">
         <CardHeader className="text-center pb-2">
           <div className="mx-auto mb-3 relative">

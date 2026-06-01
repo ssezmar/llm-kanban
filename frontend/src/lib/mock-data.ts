@@ -68,6 +68,7 @@ export const mockAgents: Agent[] = [
     avgExecutionTime: 12,
     config: { model: 'claude-sonnet-4-20250514', maxTokens: 16384, temperature: 0 },
     createdAt: Date.now() - DAY * 100,
+    githubLogin: 'claude-code-agent',
   },
   {
     id: 'agent-2',
@@ -81,6 +82,7 @@ export const mockAgents: Agent[] = [
     avgExecutionTime: 8,
     config: { model: 'o3-mini', maxTokens: 8192, temperature: 0.2 },
     createdAt: Date.now() - DAY * 80,
+    githubLogin: 'codex-cli-agent',
   },
   {
     id: 'agent-3',
@@ -94,6 +96,7 @@ export const mockAgents: Agent[] = [
     avgExecutionTime: 15,
     config: { model: 'gemini-2.5-pro', maxTokens: 32768, temperature: 0.1 },
     createdAt: Date.now() - DAY * 50,
+    githubLogin: 'gemini-cli-agent',
   },
   {
     id: 'agent-4',
@@ -107,6 +110,7 @@ export const mockAgents: Agent[] = [
     avgExecutionTime: 25,
     config: { model: 'llama-3.1-70b', maxTokens: 4096, temperature: 0.3 },
     createdAt: Date.now() - DAY * 20,
+    githubLogin: 'custom-agent',
   },
 ]
 

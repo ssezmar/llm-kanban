@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge'
 import { PageHero } from '@/components/page-hero'
 import {
   Github, Link2, Unlink, Eye, EyeOff, Loader2, CheckCircle2,
-  AlertTriangle, Star, GitFork, Lock, Globe, Info,
+  AlertTriangle, Star, GitFork, Lock, Globe, Info, Sparkles,
 } from 'lucide-react'
+import { MOCK_TOKEN, MOCK_OWNER, MOCK_REPO } from '@/lib/github-mock'
 
 export function GitHubSettingsPage() {
   const {
@@ -26,6 +27,8 @@ export function GitHubSettingsPage() {
     await connect(token.trim(), parts[0].trim(), parts[1].trim())
   }
 
+  const handleDemoConnect = () => connect(MOCK_TOKEN, MOCK_OWNER, MOCK_REPO)
+
   return (
     <div className="space-y-8 pb-12 animate-fade-in-up">
       <PageHero>
@@ -38,6 +41,32 @@ export function GitHubSettingsPage() {
 
       {!isConnected ? (
         <div className="max-w-xl mx-auto space-y-6">
+          {/* Demo data — no token required */}
+          <Card className="border-primary/30 bg-primary/[0.03]" data-tour="github-demo">
+            <CardContent className="pt-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="flex-1 space-y-1">
+                <p className="font-semibold flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  Демо-данные
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Подключите красивый набор моков (issues, PR, ревью, чеки, workflow-раны),
+                  связанный с задачами и LLM-агентами. Токен не нужен.
+                </p>
+              </div>
+              <Button onClick={handleDemoConnect} disabled={isConnecting} className="shrink-0">
+                {isConnecting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+                Подключить демо
+              </Button>
+            </CardContent>
+          </Card>
+
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <div className="h-px flex-1 bg-border" />
+            или подключите реальный репозиторий
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">

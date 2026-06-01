@@ -1,0 +1,40 @@
+name: Task
+description: A development task for the LLM agent
+title: "[Task]: "
+labels: ["task"]
+assignees: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Task Description
+      description: What needs to be done?
+    validations:
+      required: true
+
+  - type: textarea
+    id: prompt
+    attributes:
+      label: LLM Prompt
+      description: The prompt to send to the LLM agent
+      placeholder: |
+        Implement...
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How do we know this is done?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Suggested Agent
+      options:
+        - Claude Code
+        - Codex CLI
+        - Gemini CLI
+        - Auto-assign

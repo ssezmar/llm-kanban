@@ -13,6 +13,7 @@ export interface Agent {
   avgExecutionTime: number // minutes
   config: AgentConfig
   createdAt: number
+  githubLogin?: string // GitHub handle this agent commits/reviews under
 }
 
 export interface TaskLog {

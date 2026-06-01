@@ -7,6 +7,7 @@ import { DashboardPage } from '@/pages/dashboard'
 import { BoardPage } from '@/pages/board'
 import { BoardSettingsPage } from '@/pages/board-settings'
 import { TasksPage } from '@/pages/tasks'
+import { LiveGenerationPage } from '@/pages/live'
 import { TaskDetailPage } from '@/pages/task-detail'
 import { TaskCreatePage } from '@/pages/task-create'
 import { EpicsPage } from '@/pages/epics'
@@ -48,6 +49,7 @@ export function App() {
           <Route path="/board" element={<BoardPage />} />
           <Route path="/board/settings" element={<BoardSettingsPage />} />
           <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/live" element={<LiveGenerationPage />} />
           <Route path="/tasks/new" element={<TaskCreatePage />} />
           <Route path="/tasks/:id" element={<TaskDetailPage />} />
           <Route path="/epics" element={<EpicsPage />} />

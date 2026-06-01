@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Bot, Zap, BarChart3, GitBranch, ArrowRight, Layers, Shield, Globe, Cpu, Sparkles } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { HeroIllustration } from '@/components/animated-robot'
+import { SnakeBackdrop } from '@/components/snake-backdrop'
 
 const features = [
   { icon: Bot, title: 'LLM-агенты', desc: 'Распределяйте задачи между Claude Code, Codex и другими AI-агентами' },
@@ -59,6 +60,7 @@ export function LandingPage() {
           backgroundImage: 'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
           backgroundSize: '50px 50px',
         }} />
+        <SnakeBackdrop />
         <div className="absolute top-20 left-20 w-96 h-96 bg-zinc-300/20 dark:bg-white/[0.03] rounded-full blur-[120px] animate-pulse" />
         <div className="absolute top-40 right-20 w-80 h-80 bg-zinc-200/20 dark:bg-white/[0.02] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
 

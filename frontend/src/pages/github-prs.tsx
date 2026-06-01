@@ -46,7 +46,7 @@ export function GitHubPRsPage() {
   }
 
   return (
-    <div className="space-y-6 pb-12 animate-fade-in-up">
+    <div className="space-y-6 pb-12 animate-fade-in-up" data-tour="github-prs-page">
       <PageHero>
         <div className="flex items-center gap-3 mb-2">
           <GitPullRequest className="h-6 w-6" />

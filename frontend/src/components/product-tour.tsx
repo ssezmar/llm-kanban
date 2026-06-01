@@ -4,6 +4,14 @@ import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, X, Presentation } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useGitHubStore } from '@/stores/github-store'
+import { MOCK_TOKEN, MOCK_OWNER, MOCK_REPO } from '@/lib/github-mock'
+
+// Connect the GitHub mock dataset so the GitHub tour steps render live data.
+function ensureMockGitHub() {
+  const s = useGitHubStore.getState()
+  if (!s.isConnected) s.connect(MOCK_TOKEN, MOCK_OWNER, MOCK_REPO)
+}
 
 // ── Tour step definition ──
 
@@ -40,7 +48,7 @@ const TOUR_STEPS: TourStep[] = [
     route: '/dashboard',
     selector: '[data-tour="main-nav"]',
     title: 'Навигация',
-    description: 'Основное меню приложения: Дашборд, Канбан, Мониторинг, Эпики, Схема БД, Архитектура, Прецеденты и Технологии.',
+    description: 'Основное меню приложения: Дашборд, Канбан, Задачи, Генерация (живая генерация кода), Эпики, выпадающее меню GitHub (Issues, PR, Actions, настройки) и Документация.\n\nЗелёная точка у GitHub означает, что подключены демо-данные.',
     placement: 'bottom',
     section: 'Навигация',
   },
@@ -165,6 +173,76 @@ const TOUR_STEPS: TourStep[] = [
     description: 'Пошаговый мастер создания задачи (4 шага):\n\n1. Основное — название, описание, начальный столбец\n2. Промпт — текст задания для LLM-агента\n3. Параметры — приоритет, назначение агента, привязка к эпику\n4. Детали — дедлайн, теги, оценка времени, цвет карточки',
     placement: 'right',
     section: 'Задачи',
+  },
+
+  // ── Генерация кода ──
+  {
+    route: '/tasks/task-6',
+    selector: '[data-tour="task-codegen"]',
+    title: 'Встроенный редактор кода',
+    description: 'Прямо в карточке задачи — встроенный редактор кода в стиле VS Code / Zed: подсветка синтаксиса, нумерация строк, оконные элементы.\n\nКогда агент выполняет задачу (статус «Выполняется»), код печатается посимвольно в реальном времени с мигающим курсором. После завершения здесь виден готовый результат.',
+    placement: 'top',
+    section: 'Генерация',
+  },
+  {
+    route: '/live',
+    selector: '[data-tour="live-grid"]',
+    title: 'Живая генерация по нескольким задачам',
+    description: 'Страница «Генерация» показывает, как несколько LLM-агентов одновременно пишут код по разным задачам в реальном времени.\n\nКаждая панель — отдельный агент со своей моделью, файлом и скоростью печати. Кликните по заголовку, чтобы открыть задачу.',
+    placement: 'top',
+    section: 'Генерация',
+  },
+
+  // ── GitHub ──
+  {
+    route: '/github/settings',
+    selector: '[data-tour="github-demo"]',
+    title: 'GitHub-интеграция',
+    description: 'Полноценная интеграция с GitHub: Issues, Pull Requests, ревью кода и Actions.\n\nКнопка «Подключить демо» загружает красивый набор моков без токена — он уже подключён для этого тура (зелёная точка в меню GitHub).',
+    placement: 'right',
+    section: 'GitHub',
+  },
+  {
+    route: '/github/issues',
+    selector: '[data-tour="github-issues-page"]',
+    title: 'Issues = задачи',
+    description: 'Issues из GitHub отображаются со статусами, метками и авторами. Их можно синхронизировать с канбан-доской и связывать с задачами проекта.\n\nКнопкой «Open / Closed / All» фильтруются по состоянию.',
+    placement: 'bottom',
+    section: 'GitHub',
+  },
+  {
+    route: '/github/issues/2',
+    selector: '[data-tour="issue-body"]',
+    title: 'Код прямо в Issue',
+    description: 'В описании issue блоки кода рендерятся встроенным редактором с подсветкой синтаксиса.\n\nВыше, в блоке «Связи», показано, какой LLM-агент работает над issue и с какой задачей канбана он связан — видно «где какой агент что сделал».',
+    placement: 'top',
+    section: 'GitHub',
+  },
+  {
+    route: '/github/prs',
+    selector: '[data-tour="github-prs-page"]',
+    title: 'Pull Requests',
+    description: 'Список PR с состоянием (Open / Merged / Draft), ветками, количеством файлов и строк (+/−), числом комментариев и ревью.',
+    placement: 'bottom',
+    section: 'GitHub',
+  },
+  {
+    route: '/github/prs/3',
+    selector: '[data-tour="pr-diff"]',
+    title: 'Просмотр кода и ревью в PR',
+    description: 'В каждом PR — встроенный дифф-редактор в стиле VS Code / Zed: слева список изменённых файлов, справа дифф с нумерацией строк и подсветкой добавлений (зелёный) и удалений (красный).\n\nНиже — ревью кода (Approved / Changes requested) и связь PR с агентом-автором и задачей канбана.',
+    placement: 'top',
+    section: 'GitHub',
+  },
+
+  // ── Оформление ──
+  {
+    route: '/dashboard',
+    selector: null,
+    title: 'Живой фон со змейкой',
+    description: 'По всему приложению — декоративный анимированный фон: клеточная сетка и плавная «змейка» на canvas, которая ползает и «ест» точки на узлах сетки.\n\nФон адаптируется к теме, уважает prefers-reduced-motion и не мешает работе (не перехватывает клики).',
+    placement: 'center',
+    section: 'Оформление',
   },
 
   // ── Эпики ──
@@ -563,6 +641,7 @@ export function ProductTour() {
   // Register global start function
   useEffect(() => {
     globalStartTour = () => {
+      ensureMockGitHub()
       setStepIndex(0)
       setActive(true)
     }
@@ -575,6 +654,7 @@ export function ProductTour() {
     if (params.get('tour') === 'true') {
       // Small delay to let the page render
       setTimeout(() => {
+        ensureMockGitHub()
         setStepIndex(0)
         setActive(true)
       }, 500)

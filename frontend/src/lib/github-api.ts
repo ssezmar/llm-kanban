@@ -1,9 +1,10 @@
 import type {
   GitHubUser, GitHubRepo, GitHubIssue, GitHubLabel, GitHubComment,
-  GitHubPullRequest, GitHubReview, GitHubCheckRun,
+  GitHubPullRequest, GitHubReview, GitHubCheckRun, GitHubPullFile,
   GitHubWorkflow, GitHubWorkflowRun, GitHubWorkflowJob,
   GitHubRateLimit,
 } from './github-types'
+import { isMockToken, resolveMock } from './github-mock'
 
 const BASE = 'https://api.github.com'
 
@@ -11,6 +12,11 @@ let lastRateLimit: GitHubRateLimit | null = null
 export function getRateLimit() { return lastRateLimit }
 
 async function ghFetch<T>(token: string, path: string, init?: RequestInit): Promise<T> {
+  if (isMockToken(token)) {
+    lastRateLimit = { limit: 5000, remaining: 4987, reset: Math.floor(Date.now() / 1000) + 3600 }
+    return resolveMock(path, init) as Promise<T>
+  }
+
   const res = await fetch(`${BASE}${path}`, {
     ...init,
     headers: {
@@ -99,6 +105,9 @@ export const fetchPullRequest = (token: string, owner: string, repo: string, num
 
 export const fetchPRReviews = (token: string, owner: string, repo: string, number: number) =>
   ghFetch<GitHubReview[]>(token, `/repos/${owner}/${repo}/pulls/${number}/reviews`)
+
+export const fetchPRFiles = (token: string, owner: string, repo: string, number: number) =>
+  ghFetch<GitHubPullFile[]>(token, `/repos/${owner}/${repo}/pulls/${number}/files?per_page=100`)
 
 export const fetchPRChecks = (token: string, owner: string, repo: string, ref: string) =>
   ghFetch<{ total_count: number; check_runs: GitHubCheckRun[] }>(token, `/repos/${owner}/${repo}/commits/${ref}/check-runs`)

@@ -16,11 +16,13 @@ import { Select } from '@/components/ui/select'
 import {
   ArrowLeft, Play, Clock, MessageSquare, Terminal, Star,
   CalendarClock, Plus, Trash2, CheckSquare, Square, Send,
-  Save, X, Pencil, User, Bot, Tag, Flame,
+  Save, X, Pencil, User, Bot, Tag, Flame, Code2,
   Github, GitPullRequest, CircleDot, ExternalLink, Link2, Unlink,
 } from 'lucide-react'
 import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { PageHero } from '@/components/page-hero'
+import { CodeStream } from '@/components/code-stream'
+import { sampleForTask } from '@/lib/code-samples'
 import { PipelinesSection } from '@/components/pipeline-stages'
 import { AttachmentsPanel } from '@/components/attachments-panel'
 import { cn } from '@/lib/utils'
@@ -439,6 +441,42 @@ export function TaskDetailPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Live code generation */}
+      {(task.assignedAgent || ['executing', 'review', 'rework', 'done'].includes(task.status)) && (
+        <Card data-tour="task-codegen">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Code2 className="h-5 w-5" /> Генерация кода
+              {task.status === 'executing' && (
+                <span className="flex items-center gap-1.5 text-xs font-normal text-sky-500">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500" />
+                  </span>
+                  в реальном времени
+                </span>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {(() => {
+              const sample = sampleForTask(task.id)
+              return (
+                <CodeStream
+                  code={sample.code}
+                  language={sample.language}
+                  fileName={sample.fileName}
+                  agentName={agent?.name}
+                  streaming={task.status === 'executing'}
+                  loop={task.status === 'executing'}
+                  heightClass="h-80"
+                />
+              )
+            })()}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Logs — enhanced timeline */}
       <Card>

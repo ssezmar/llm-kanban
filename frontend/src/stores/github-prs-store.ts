@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { GitHubPullRequest, GitHubReview, GitHubCheckRun } from '@/lib/github-types'
+import type { GitHubPullRequest, GitHubReview, GitHubCheckRun, GitHubPullFile } from '@/lib/github-types'
 import * as api from '@/lib/github-api'
 import { useGitHubStore } from './github-store'
 
@@ -8,6 +8,7 @@ interface GitHubPRsState {
   selectedPR: GitHubPullRequest | null
   reviews: GitHubReview[]
   checks: GitHubCheckRun[]
+  files: GitHubPullFile[]
   isLoading: boolean
   error: string | null
   filter: 'open' | 'closed' | 'all'
@@ -29,6 +30,7 @@ export const useGitHubPRsStore = create<GitHubPRsState>()((set, get) => ({
   selectedPR: null,
   reviews: [],
   checks: [],
+  files: [],
   isLoading: false,
   error: null,
   filter: 'open',
@@ -52,20 +54,21 @@ export const useGitHubPRsStore = create<GitHubPRsState>()((set, get) => ({
     if (!c) return
     set({ isLoading: true, error: null })
     try {
-      const [pr, reviews] = await Promise.all([
+      const [pr, reviews, files] = await Promise.all([
         api.fetchPullRequest(c.token, c.owner, c.repo, number),
         api.fetchPRReviews(c.token, c.owner, c.repo, number),
+        api.fetchPRFiles(c.token, c.owner, c.repo, number).catch(() => [] as GitHubPullFile[]),
       ])
       let checks: GitHubCheckRun[] = []
       try {
         const res = await api.fetchPRChecks(c.token, c.owner, c.repo, pr.head.sha)
         checks = res.check_runs
       } catch { /* no checks */ }
-      set({ selectedPR: pr, reviews, checks, isLoading: false })
+      set({ selectedPR: pr, reviews, checks, files, isLoading: false })
     } catch (e: unknown) {
       set({ error: e instanceof Error ? e.message : 'Failed to load PR', isLoading: false })
     }
   },
 
-  clearSelection: () => set({ selectedPR: null, reviews: [], checks: [] }),
+  clearSelection: () => set({ selectedPR: null, reviews: [], checks: [], files: [] }),
 }))

@@ -102,6 +102,15 @@ export interface GitHubReview {
   html_url: string
 }
 
+export interface GitHubPullFile {
+  filename: string
+  status: 'added' | 'modified' | 'removed' | 'renamed'
+  additions: number
+  deletions: number
+  changes: number
+  patch: string // unified diff hunk(s)
+}
+
 export interface GitHubCheckRun {
   id: number
   name: string

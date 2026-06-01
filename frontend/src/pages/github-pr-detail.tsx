@@ -6,6 +6,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { GitHubLinks } from '@/components/github-links'
+import { DiffView } from '@/components/diff-view'
+import { BodyWithCode } from '@/components/markdown-code'
 import {
   ArrowLeft, GitPullRequest, GitMerge, ExternalLink, Loader2,
   CheckCircle2, XCircle, MessageSquare, FileCode, Clock, User,
@@ -34,7 +37,7 @@ export function GitHubPRDetailPage() {
   const { number } = useParams<{ number: string }>()
   const navigate = useNavigate()
   const { isConnected } = useGitHubStore()
-  const { selectedPR: pr, reviews, checks, isLoading, fetchOne, clearSelection } = useGitHubPRsStore()
+  const { selectedPR: pr, reviews, checks, files, isLoading, fetchOne, clearSelection } = useGitHubPRsStore()
 
   useEffect(() => {
     if (isConnected && number) fetchOne(+number)
@@ -108,6 +111,9 @@ export function GitHubPRDetailPage() {
         </a>
       </div>
 
+      {/* Links to agent + task */}
+      <GitHubLinks prNumber={pr.number} authorLogin={pr.user.login} />
+
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">
         {[
@@ -136,9 +142,20 @@ export function GitHubPRDetailPage() {
       {pr.body && (
         <Card>
           <CardContent className="pt-6">
-            <pre className="whitespace-pre-wrap text-sm text-foreground/80 leading-relaxed font-sans">{pr.body}</pre>
+            <BodyWithCode text={pr.body} />
           </CardContent>
         </Card>
+      )}
+
+      {/* Changed files — embedded diff editor */}
+      {files.length > 0 && (
+        <div className="space-y-3" data-tour="pr-diff">
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <FileCode className="h-4 w-4" />
+            Изменённые файлы ({files.length})
+          </h3>
+          <DiffView files={files} />
+        </div>
       )}
 
       {/* Reviews */}

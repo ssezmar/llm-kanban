@@ -56,7 +56,7 @@ export function GitHubIssuesPage() {
   }
 
   return (
-    <div className="space-y-6 pb-12 animate-fade-in-up">
+    <div className="space-y-6 pb-12 animate-fade-in-up" data-tour="github-issues-page">
       <PageHero>
         <div className="flex items-center gap-3 mb-2">
           <CircleDot className="h-6 w-6" />

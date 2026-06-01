@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
+import { GitHubLinks } from '@/components/github-links'
+import { BodyWithCode } from '@/components/markdown-code'
 import {
   ArrowLeft, CircleDot, CircleCheck, ExternalLink, MessageSquare,
   Send, Loader2, KanbanSquare, Calendar, User, Tag,
@@ -157,13 +159,14 @@ export function GitHubIssueDetailPage() {
         </a>
       </div>
 
+      {/* Links to agent + task */}
+      <GitHubLinks issueNumber={issue.number} authorLogin={issue.assignees[0]?.login} />
+
       {/* Body */}
       {issue.body && (
-        <Card>
+        <Card data-tour="issue-body">
           <CardContent className="pt-6">
-            <div className="prose prose-sm prose-invert max-w-none">
-              <pre className="whitespace-pre-wrap text-sm text-foreground/80 leading-relaxed font-sans">{issue.body}</pre>
-            </div>
+            <BodyWithCode text={issue.body} />
           </CardContent>
         </Card>
       )}
