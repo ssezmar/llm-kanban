@@ -11,7 +11,7 @@ import {
   MonitorSmartphone, Boxes, Activity, Tags, Gauge, Wallet, TrendingUp,
   KanbanSquare, GitPullRequest, BarChart3, Check, Sparkles,
   Layers, Cpu, Network, Github, Circle,
-  Workflow, FlaskConical, FileImage, ListChecks,
+  Workflow, FlaskConical, FileImage, ListChecks, Figma, MessageCircle,
 } from 'lucide-react'
 import * as D from '@/lib/presentation-data'
 
@@ -463,6 +463,150 @@ function SlideProcess() {
   )
 }
 
+// ── Fake Figma workspace mock ──
+function FigmaFrame({ label, style, children }: { label: string; style: React.CSSProperties; children: React.ReactNode }) {
+  return (
+    <div className="absolute" style={style}>
+      <p className="text-[8px] text-[#a259ff] mb-1 font-medium">{label}</p>
+      <div className="rounded-md bg-white text-zinc-800 border border-black/40 overflow-hidden shadow-lg ring-1 ring-[#0d99ff]/30">{children}</div>
+    </div>
+  )
+}
+
+function FigmaMock() {
+  const avatars = [['АК', '#f24e1e'], ['МС', '#a259ff'], ['РД', '#0d99ff']]
+  return (
+    <div className="rounded-xl overflow-hidden border border-black/50 shadow-2xl shadow-black/30 bg-[#2c2c2c] text-zinc-300">
+      {/* Toolbar */}
+      <div className="h-9 flex items-center gap-3 px-3 bg-[#1e1e1e] border-b border-black/50 text-xs">
+        <Figma className="h-4 w-4 text-[#a259ff]" />
+        <span className="font-medium text-zinc-100">LLM Kanban — UI Kit</span>
+        <span className="text-zinc-500 hidden sm:inline">Drafts / Курсовой проект</span>
+        <div className="ml-auto flex items-center gap-2">
+          <div className="flex -space-x-1.5">
+            {avatars.map(([t, c]) => (
+              <span key={t} className="h-5 w-5 rounded-full text-[8px] font-bold text-white flex items-center justify-center ring-2 ring-[#1e1e1e]" style={{ background: c }}>{t}</span>
+            ))}
+          </div>
+          <span className="px-2 py-1 rounded bg-[#0d99ff] text-white text-[10px] font-medium">Share</span>
+          <span className="text-zinc-400">▶</span>
+          <span className="text-zinc-500 text-[10px]">128%</span>
+        </div>
+      </div>
+      <div className="flex h-72">
+        {/* Left: pages + layers */}
+        <div className="w-44 shrink-0 bg-[#252525] border-r border-black/50 text-[10px] p-2 space-y-2 hidden md:block">
+          <div>
+            <p className="text-zinc-500 uppercase tracking-wide text-[8px] mb-1">Pages</p>
+            {['Канбан-доска', 'Auth', 'Dashboard', 'Components'].map((p, i) => (
+              <p key={p} className={cn('px-1.5 py-0.5 rounded flex items-center gap-1', i === 0 ? 'bg-[#0d99ff]/20 text-zinc-100' : 'text-zinc-400')}>▸ {p}</p>
+            ))}
+          </div>
+          <div>
+            <p className="text-zinc-500 uppercase tracking-wide text-[8px] mb-1">Layers</p>
+            {[['#', 'Frame: Board'], ['▸', 'Column / Backlog'], ['▸', 'Card / Task'], ['T', 'Title'], ['▢', 'Badge / Agent'], ['#', 'Frame: Login'], ['#', 'Frame: Task Card']].map(([g, n], i) => (
+              <p key={i} className="px-1.5 py-0.5 text-zinc-400 truncate" style={{ paddingLeft: g === '▸' || g === 'T' || g === '▢' ? 14 : 6 }}><span className="text-zinc-600 mr-1">{g}</span>{n}</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Canvas */}
+        <div className="flex-1 relative bg-[#1a1a1a] overflow-hidden"
+          style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '16px 16px' }}>
+          {/* Prototype connection arrows */}
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs><marker id="ah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0d99ff" /></marker></defs>
+            <path d="M26,42 H35" stroke="#0d99ff" strokeWidth="0.6" strokeDasharray="2 1.5" markerEnd="url(#ah)" fill="none" />
+            <path d="M70,42 H75" stroke="#0d99ff" strokeWidth="0.6" strokeDasharray="2 1.5" markerEnd="url(#ah)" fill="none" />
+          </svg>
+
+          <FigmaFrame label="Login" style={{ left: '3%', top: '24%', width: '22%' }}>
+            <div className="p-2 space-y-1.5">
+              <div className="h-2 w-1/2 mx-auto rounded bg-zinc-300" />
+              <div className="h-3 rounded border border-zinc-200" />
+              <div className="h-3 rounded border border-zinc-200" />
+              <div className="h-3 rounded bg-zinc-900" />
+            </div>
+          </FigmaFrame>
+
+          <FigmaFrame label="Board" style={{ left: '34%', top: '12%', width: '36%' }}>
+            <div className="p-1.5">
+              <div className="h-1.5 w-10 rounded bg-zinc-300 mb-1.5" />
+              <div className="flex gap-1">
+                {['#64748b', '#3b82f6', '#eab308', '#22c55e'].map((c) => (
+                  <div key={c} className="flex-1 rounded bg-zinc-50 border border-zinc-200 p-1 space-y-1">
+                    <span className="block h-1 w-3/4 rounded" style={{ background: c }} />
+                    <div className="rounded border-l-2 bg-white px-1 py-1 space-y-0.5" style={{ borderColor: c }}>
+                      <div className="h-1 w-3/4 rounded bg-zinc-300" />
+                      <div className="h-1 w-1/2 rounded bg-zinc-200" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FigmaFrame>
+
+          <FigmaFrame label="Task Card" style={{ left: '75%', top: '26%', width: '22%' }}>
+            <div className="p-2 space-y-1">
+              <div className="h-1.5 w-3/4 rounded bg-zinc-300" />
+              <div className="h-1 w-full rounded bg-zinc-200" />
+              <div className="h-1 w-2/3 rounded bg-zinc-200" />
+              <div className="flex gap-1 pt-0.5"><span className="h-2 w-6 rounded-full bg-indigo-200" /><span className="h-2 w-5 rounded-full bg-amber-200" /></div>
+              <div className="h-2.5 rounded bg-zinc-900 mt-1" />
+            </div>
+          </FigmaFrame>
+
+          {/* Comment pin */}
+          <div className="absolute" style={{ left: '60%', top: '60%' }}>
+            <span className="h-5 w-5 rounded-full rounded-bl-none bg-[#0d99ff] text-white flex items-center justify-center shadow-lg"><MessageCircle className="h-3 w-3" /></span>
+          </div>
+        </div>
+
+        {/* Right: design panel */}
+        <div className="w-44 shrink-0 bg-[#252525] border-l border-black/50 text-[10px] p-2 space-y-2 hidden lg:block">
+          <p className="text-zinc-500 uppercase tracking-wide text-[8px]">Design</p>
+          <div className="space-y-1">
+            <p className="text-zinc-400">Typography</p>
+            <p className="text-zinc-300 bg-[#1e1e1e] rounded px-1.5 py-1">Manrope · 16 / 24</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-zinc-400">Color styles</p>
+            <div className="flex gap-1">
+              {['#0a0a0a', '#ffffff', '#3b82f6', '#22c55e', '#eab308', '#ef4444'].map((c) => (
+                <span key={c} className="h-4 w-4 rounded border border-black/40" style={{ background: c }} />
+              ))}
+            </div>
+          </div>
+          <div className="space-y-1">
+            <p className="text-zinc-400">Components</p>
+            {['Button', 'Card / Task', 'Badge', 'Column'].map((c) => (
+              <p key={c} className="text-zinc-300 bg-[#1e1e1e] rounded px-1.5 py-0.5 flex items-center gap-1">◇ {c}</p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SlideFigma({ step }: { step: number }) {
+  return (
+    <Shell section="Проектирование интерфейса" title="Прототип в Figma" icon={Figma}>
+      <FigmaMock />
+      <Reveal show={step >= 1} className="mt-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {[['Wireframes', 'низкая детализация'], ['UI Kit', 'цвета, типографика, компоненты'], ['Макеты экранов', 'Login · Board · Task · Dashboard'], ['Прототип', 'связи между экранами'], ['Handoff', 'передача в разработку']].map(([t, d], i) => (
+            <Reveal key={t} show={step >= 1} delay={i * 70} className="flex items-center gap-2">
+              {i > 0 && <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />}
+              <div className="rounded-lg border bg-card px-3 py-1.5"><p className="text-xs font-semibold">{t}</p><p className="text-[10px] text-muted-foreground">{d}</p></div>
+            </Reveal>
+          ))}
+        </div>
+      </Reveal>
+    </Shell>
+  )
+}
+
 function SlidePrototype() {
   return (
     <Shell section="Проектирование интерфейса" title="Интерактивный прототип" icon={MonitorSmartphone}>
@@ -744,6 +888,7 @@ const SLIDES: SlideDef[] = [
   { id: 'methods', section: 'Методы', steps: 3, render: (s) => <SlideMethods step={s} /> },
   { id: 'algo', section: 'Алгоритмы', steps: 3, render: (s) => <SlideAlgorithms step={s} /> },
   { id: 'process', section: 'Процессы', steps: 1, render: () => <SlideProcess /> },
+  { id: 'figma', section: 'Figma', steps: 2, render: (s) => <SlideFigma step={s} /> },
   { id: 'prototype', section: 'Прототип', steps: 1, render: () => <SlidePrototype /> },
   { id: 'demo', section: 'Демонстрация', steps: 2, render: (s) => <SlideDemo step={s} /> },
   { id: 'works', section: 'Проекты', steps: 4, render: (s) => <SlideWorks step={s} /> },
