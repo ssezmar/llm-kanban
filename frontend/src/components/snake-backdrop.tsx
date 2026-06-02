@@ -76,7 +76,7 @@ function drawSmoothPath(
   c.globalAlpha = 1
 }
 
-export function SnakeBackdrop({ className }: { className?: string }) {
+export function SnakeBackdrop({ className, grid = false }: { className?: string; grid?: boolean }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -249,9 +249,19 @@ export function SnakeBackdrop({ className }: { className?: string }) {
     <div
       ref={wrapRef}
       aria-hidden
-      className={cn('pointer-events-none absolute inset-0 motion-reduce:hidden', className)}
+      className={cn('pointer-events-none absolute inset-0', className)}
     >
-      <canvas ref={canvasRef} className="block h-full w-full" />
+      {grid && (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'linear-gradient(hsl(var(--foreground) / 0.09) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.09) 1px, transparent 1px)',
+            backgroundSize: `${GRID}px ${GRID}px`,
+          }}
+        />
+      )}
+      <canvas ref={canvasRef} className="block h-full w-full motion-reduce:hidden" />
     </div>
   )
 }

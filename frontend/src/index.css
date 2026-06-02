@@ -159,6 +159,26 @@
   100% { --angle: 360deg; }
 }
 
+/* Presentation: cinematic 3D slide entrance */
+@keyframes slide-3d-in {
+  0% { opacity: 0; transform: perspective(1600px) rotateY(9deg) translate3d(70px, 0, -90px) scale(0.93); filter: blur(10px); }
+  55% { filter: blur(0); }
+  100% { opacity: 1; transform: perspective(1600px) rotateY(0) translate3d(0, 0, 0) scale(1); filter: blur(0); }
+}
+
+/* Presentation: light sweep across on slide change */
+@keyframes slide-sweep {
+  0% { transform: translateX(-130%) skewX(-14deg); opacity: 0; }
+  18% { opacity: 0.7; }
+  100% { transform: translateX(130%) skewX(-14deg); opacity: 0; }
+}
+
+/* Presentation: per-element rise used inside slides */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(22px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @layer utilities {
   .animate-fade-in-up {
     animation: fade-in-up 0.4s ease-out both;
@@ -191,6 +211,12 @@
   }
   .animate-bounce-subtle {
     animation: bounce-subtle 2s ease-in-out infinite;
+  }
+  .animate-slide-3d {
+    animation: slide-3d-in 0.62s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+  }
+  .animate-slide-sweep {
+    animation: slide-sweep 0.75s ease-out both;
   }
 
   /* Stagger children animations */

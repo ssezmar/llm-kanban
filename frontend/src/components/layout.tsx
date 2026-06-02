@@ -9,7 +9,7 @@ import { SnakeBackdrop } from '@/components/snake-backdrop'
 import {
   LayoutDashboard, KanbanSquare, ListChecks, LogOut, Bot, Layers,
   Database, Network, Users, Cpu, FileText, ChevronDown,
-  Github, CircleDot, GitPullRequest, Play, Settings, Radio,
+  Github, CircleDot, GitPullRequest, Play, Settings, Radio, Presentation,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -172,6 +172,12 @@ export function Layout() {
             </nav>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/presentation">
+              <Button variant="outline" size="sm" className="gap-2 text-xs" title="Презентация курсового проекта">
+                <Presentation className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Презентация</span>
+              </Button>
+            </Link>
             <StartTourButton />
             <ThemeToggle />
             <button

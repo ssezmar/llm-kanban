@@ -8,6 +8,7 @@ import { BoardPage } from '@/pages/board'
 import { BoardSettingsPage } from '@/pages/board-settings'
 import { TasksPage } from '@/pages/tasks'
 import { LiveGenerationPage } from '@/pages/live'
+import { PresentationPage } from '@/pages/presentation'
 import { TaskDetailPage } from '@/pages/task-detail'
 import { TaskCreatePage } from '@/pages/task-create'
 import { EpicsPage } from '@/pages/epics'
@@ -38,6 +39,14 @@ export function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route
+          path="/presentation"
+          element={
+            <ProtectedRoute>
+              <PresentationPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           element={
             <ProtectedRoute>
